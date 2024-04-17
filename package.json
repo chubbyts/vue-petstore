@@ -58,7 +58,7 @@
     "vue-tsc": "^2.0.12"
   },
   "engines": {
-    "node": ">=16"
+    "node": ">=18"
   },
   "prettier": {
     "printWidth": 120,
