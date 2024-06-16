@@ -24,12 +24,14 @@ test('without initial pet', () => {
               data-testid="pet-form-name"
               type="text"
               class="mb-3 mt-2 block w-full border px-3 py-2 border-gray-300"
+              value=""
             /><!----></label
           ><label class="block"
             >Tag<input
               data-testid="pet-form-tag"
               type="text"
               class="mb-3 mt-2 block w-full border px-3 py-2 border-gray-300"
+              value=""
             /><!----></label
           >
           <div class="mb-3">
@@ -74,12 +76,14 @@ test('with initial pet', () => {
               data-testid="pet-form-name"
               type="text"
               class="mb-3 mt-2 block w-full border px-3 py-2 border-gray-300"
+              value="Brownie"
             /><!----></label
           ><label class="block"
             >Tag<input
               data-testid="pet-form-tag"
               type="text"
               class="mb-3 mt-2 block w-full border px-3 py-2 border-gray-300"
+              value="0001-000"
             /><!----></label
           >
           <div class="mb-3">
@@ -91,6 +95,7 @@ test('with initial pet', () => {
                     data-testid="pet-form-vaccinations-0-name"
                     type="text"
                     class="mb-3 mt-2 block w-full border px-3 py-2 border-gray-300"
+                    value="rabies"
                   /><!----></label
                 ><button
                   colortheme="red"
@@ -163,6 +168,7 @@ test('bad request - with query string name', () => {
               data-testid="pet-form-name"
               type="text"
               class="mb-3 mt-2 block w-full border px-3 py-2 border-red-600 bg-red-100"
+              value="Brownie"
             />
             <ul class="mb-3">
               <li>reason1</li>
@@ -172,6 +178,7 @@ test('bad request - with query string name', () => {
               data-testid="pet-form-tag"
               type="text"
               class="mb-3 mt-2 block w-full border px-3 py-2 border-gray-300"
+              value="0001-000"
             /><!----></label
           >
           <div class="mb-3">
@@ -183,6 +190,7 @@ test('bad request - with query string name', () => {
                     data-testid="pet-form-vaccinations-0-name"
                     type="text"
                     class="mb-3 mt-2 block w-full border px-3 py-2 border-red-600 bg-red-100"
+                    value="rabies"
                   />
                   <ul class="mb-3">
                     <li>reason2</li>
