@@ -25,8 +25,6 @@ export const TextField = defineComponent(
     setValue: (value: string) => void;
     invalidParameters: Array<InvalidParameter>;
   }) => {
-    console.log(props);
-
     return () => (
       <label class={`block ${props.invalidParameters.length > 0 ? 'text-red-600' : ''} `}>
         {props.label}

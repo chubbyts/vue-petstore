@@ -1,18 +1,20 @@
 /** @jsxImportSource vue */
 
 import { vi, test, expect } from 'vitest';
-import { formatHtml } from '../../../formatter';
-import { NotFound } from '../../../../src/client/error';
 import { render, screen } from '@testing-library/vue';
-import type { readPetClient } from '../../../../src/client/pet';
 import { createRouter, createWebHistory, RouterView } from 'vue-router';
 import { defineComponent } from 'vue';
+import { formatHtml } from '../../../formatter';
+import { NotFound } from '../../../../src/client/error';
+import type { readPetClient } from '../../../../src/client/pet';
 import type { PetResponse } from '../../../../src/model/pet';
 
+// eslint-disable-next-line functional/no-let
 let mockReadPetClient: typeof readPetClient;
 
 vi.mock('../../../../src/client/pet', () => {
   return {
+    // eslint-disable-next-line functional/prefer-tacit
     readPetClient: (id: string) => {
       return mockReadPetClient(id);
     },
@@ -30,8 +32,13 @@ test('not found', async () => {
     history: createWebHistory(),
     routes: [
       { path: '/', name: 'Home', component: defineComponent(() => () => <div data-testid="page-home-mock" />) },
+      {
+        path: '/pet',
+        name: 'PetList',
+        component: defineComponent(() => () => <div data-testid="page-pet-list-mock" />),
+      },
       { path: '/pet/:id', name: 'PetRead', component: () => import('../../../../src/component/page/pet/read') },
-    ]
+    ],
   });
 
   const { container } = render(<RouterView />, {
@@ -85,8 +92,13 @@ test('success without vaccinations', async () => {
     history: createWebHistory(),
     routes: [
       { path: '/', name: 'Home', component: defineComponent(() => () => <div data-testid="page-home-mock" />) },
+      {
+        path: '/pet',
+        name: 'PetList',
+        component: defineComponent(() => () => <div data-testid="page-pet-list-mock" />),
+      },
       { path: '/pet/:id', name: 'PetRead', component: () => import('../../../../src/component/page/pet/read') },
-    ]
+    ],
   });
 
   const { container } = render(<RouterView />, {
@@ -153,8 +165,13 @@ test('success with vaccinations', async () => {
     history: createWebHistory(),
     routes: [
       { path: '/', name: 'Home', component: defineComponent(() => () => <div data-testid="page-home-mock" />) },
+      {
+        path: '/pet',
+        name: 'PetList',
+        component: defineComponent(() => () => <div data-testid="page-pet-list-mock" />),
+      },
       { path: '/pet/:id', name: 'PetRead', component: () => import('../../../../src/component/page/pet/read') },
-    ]
+    ],
   });
 
   const { container } = render(<RouterView />, {

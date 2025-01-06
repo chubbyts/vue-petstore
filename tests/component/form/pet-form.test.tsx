@@ -1,17 +1,17 @@
 /** @jsxImportSource vue */
 
 import { test, expect, vi } from 'vitest';
+import { userEvent } from '@testing-library/user-event';
+import { render, screen } from '@testing-library/vue';
 import { formatHtml } from '../../formatter';
 import { PetForm } from '../../../src/component/form/pet-form';
 import { BadRequest, NetworkError } from '../../../src/client/error';
 import type { PetRequest } from '../../../src/model/pet';
-import { userEvent } from '@testing-library/user-event';
-import { render, screen } from '@testing-library/vue';
 
 test('without initial pet', () => {
   const httpError = undefined;
   const initialPet = undefined;
-  const submitPet = () => { };
+  const submitPet = () => {};
 
   const { container } = render(<PetForm httpError={httpError} initialPet={initialPet} submitPet={submitPet} />);
 
@@ -63,7 +63,7 @@ test('without initial pet', () => {
 test('with initial pet', () => {
   const httpError = undefined;
   const initialPet = { name: 'Brownie', tag: '0001-000', vaccinations: [{ name: 'rabies' }] };
-  const submitPet = () => { };
+  const submitPet = () => {};
 
   const { container } = render(<PetForm httpError={httpError} initialPet={initialPet} submitPet={submitPet} />);
 
@@ -131,7 +131,7 @@ test('with initial pet', () => {
 test('network error', () => {
   const httpError = new NetworkError({ title: 'network error' });
   const initialPet = { name: 'Brownie', tag: '0001-000', vaccinations: [{ name: 'rabies' }] };
-  const submitPet = () => { };
+  const submitPet = () => {};
 
   render(<PetForm httpError={httpError} initialPet={initialPet} submitPet={submitPet} />);
 });
@@ -141,7 +141,7 @@ test('bad request', () => {
     title: 'bad request',
   });
   const initialPet = { name: 'Brownie', tag: '0001-000', vaccinations: [{ name: 'rabies' }] };
-  const submitPet = () => { };
+  const submitPet = () => {};
 
   render(<PetForm httpError={httpError} initialPet={initialPet} submitPet={submitPet} />);
 });
@@ -155,7 +155,7 @@ test('bad request - with query string name', () => {
     ],
   });
   const initialPet = { name: 'Brownie', tag: '0001-000', vaccinations: [{ name: 'rabies' }] };
-  const submitPet = () => { };
+  const submitPet = () => {};
 
   const { container } = render(<PetForm httpError={httpError} initialPet={initialPet} submitPet={submitPet} />);
 

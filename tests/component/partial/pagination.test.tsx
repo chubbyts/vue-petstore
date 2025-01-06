@@ -7,7 +7,7 @@ import { formatHtml } from '../../formatter';
 import { Pagination } from '../../../src/component/partial/pagination';
 
 test('max pages 1', () => {
-  const submitPage = (): void => { };
+  const submitPage = (): void => {};
 
   const { container } = render(<Pagination currentPage={1} maxPages={1} totalPages={10} submitPage={submitPage} />);
 
@@ -18,7 +18,7 @@ test('max pages 1', () => {
 });
 
 test('total pages 1', () => {
-  const submitPage = (): void => { };
+  const submitPage = (): void => {};
 
   const { container } = render(<Pagination currentPage={1} maxPages={7} totalPages={1} submitPage={submitPage} />);
 
@@ -29,7 +29,7 @@ test('total pages 1', () => {
 });
 
 test('current 1', () => {
-  const submitPage = (): void => { };
+  const submitPage = (): void => {};
 
   const { container } = render(<Pagination currentPage={1} maxPages={7} totalPages={10} submitPage={submitPage} />);
 
@@ -71,7 +71,7 @@ test('current 1', () => {
 });
 
 test('current 4', () => {
-  const submitPage = (): void => { };
+  const submitPage = (): void => {};
 
   const { container } = render(<Pagination currentPage={4} maxPages={7} totalPages={10} submitPage={submitPage} />);
 
@@ -118,7 +118,7 @@ test('current 4', () => {
 });
 
 test('current 7', () => {
-  const submitPage = (): void => { };
+  const submitPage = (): void => {};
 
   const { container } = render(<Pagination currentPage={7} maxPages={7} totalPages={10} submitPage={submitPage} />);
 
@@ -165,7 +165,7 @@ test('current 7', () => {
 });
 
 test('current 10', () => {
-  const submitPage = (): void => { };
+  const submitPage = (): void => {};
 
   const { container } = render(<Pagination currentPage={10} maxPages={7} totalPages={10} submitPage={submitPage} />);
 
@@ -210,6 +210,7 @@ test('buttons', async () => {
   const pages: number[] = [];
 
   const submitPage = (page: number): void => {
+    // eslint-disable-next-line functional/immutable-data
     pages.push(page);
   };
 

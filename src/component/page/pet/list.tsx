@@ -1,16 +1,16 @@
-import { computed, defineComponent, onMounted, onUnmounted, watch } from 'vue';
-import { H1 } from '../../heading';
-import { HttpError as HttpErrorPartial } from '../../partial/http-error';
+import { computed, defineComponent, onMounted, watch } from 'vue';
 import { format } from 'date-fns';
 import { de } from 'date-fns/locale';
 import { useRoute, useRouter } from 'vue-router';
+import { z } from 'zod';
+import qs from 'qs';
+import { H1 } from '../../heading';
+import { HttpError as HttpErrorPartial } from '../../partial/http-error';
 import { createModelResource } from '../../../hook/create-model-resource';
 import { deletePetClient as deleteClient, listPetsClient as listClient } from '../../../client/pet';
-import { z } from 'zod';
 import { numberSchema } from '../../../model/model';
 import type { PetFilters, PetSort } from '../../../model/pet';
 import { petFiltersSchema, petSortSchema } from '../../../model/pet';
-import qs from 'qs';
 import { AnchorButton, Button } from '../../button';
 import { Table, Tbody, Td, Th, Thead, Tr } from '../../table';
 import { Pagination } from '../../partial/pagination';
@@ -71,6 +71,7 @@ const PetList = defineComponent(
     };
 
     onMounted(() => {
+      // eslint-disable-next-line functional/immutable-data
       document.title = pageTitle;
 
       fetchPetList();
@@ -78,10 +79,6 @@ const PetList = defineComponent(
 
     watch(query, () => {
       fetchPetList();
-    });
-
-    onUnmounted(() => {
-      document.title = '';
     });
 
     return () => (

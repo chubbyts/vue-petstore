@@ -1,7 +1,7 @@
-import { defineComponent, onMounted, onUnmounted } from 'vue';
+import { defineComponent, onMounted } from 'vue';
+import { useRoute, useRouter } from 'vue-router';
 import { H1 } from '../../heading';
 import { HttpError as HttpErrorPartial } from '../../partial/http-error';
-import { useRoute, useRouter } from 'vue-router';
 import { createModelResource } from '../../../hook/create-model-resource';
 import { readPetClient as readClient, updatePetClient as updateClient } from '../../../client/pet';
 import type { PetRequest } from '../../../model/pet';
@@ -25,13 +25,10 @@ const PetUpdate = defineComponent(
     };
 
     onMounted(() => {
+      // eslint-disable-next-line functional/immutable-data
       document.title = pageTitle;
 
       actions.readModel(id);
-    });
-
-    onUnmounted(() => {
-      document.title = '';
     });
 
     return () => (

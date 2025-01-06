@@ -1,4 +1,4 @@
-import { defineComponent, onMounted, onUnmounted } from 'vue';
+import { defineComponent, onMounted } from 'vue';
 import { H1 } from '../heading';
 
 const pageTitle = 'Home';
@@ -6,11 +6,8 @@ const pageTitle = 'Home';
 const Home = defineComponent(
   () => {
     onMounted(() => {
+      // eslint-disable-next-line functional/immutable-data
       document.title = pageTitle;
-    });
-
-    onUnmounted(() => {
-      document.title = '';
     });
 
     return () => (

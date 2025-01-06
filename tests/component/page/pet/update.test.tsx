@@ -1,24 +1,28 @@
 /** @jsxImportSource vue */
 
 import { vi, test, expect } from 'vitest';
+import { render, screen } from '@testing-library/vue';
+import { userEvent } from '@testing-library/user-event';
+import { defineComponent } from 'vue';
+import { createRouter, createWebHistory, RouterView } from 'vue-router';
 import type { PetRequest, PetResponse } from '../../../../src/model/pet';
 import { formatHtml } from '../../../formatter';
 import type { HttpError } from '../../../../src/client/error';
 import { NotFound, UnprocessableEntity } from '../../../../src/client/error';
 import type { readPetClient, updatePetClient } from '../../../../src/client/pet';
-import { render, screen } from '@testing-library/vue';
-import { userEvent } from '@testing-library/user-event';
-import { defineComponent } from 'vue';
-import { createRouter, createWebHistory, RouterView } from 'vue-router';
 
+// eslint-disable-next-line functional/no-let
 let mockReadPetClient: typeof readPetClient;
+// eslint-disable-next-line functional/no-let
 let mockUpdatePetClient: typeof updatePetClient;
 
 vi.mock('../../../../src/client/pet', () => {
   return {
+    // eslint-disable-next-line functional/prefer-tacit
     readPetClient: (id: string) => {
       return mockReadPetClient(id);
     },
+    // eslint-disable-next-line functional/prefer-tacit
     updatePetClient: (id: string, pet: PetRequest) => {
       return mockUpdatePetClient(id, pet);
     },
@@ -28,20 +32,23 @@ vi.mock('../../../../src/client/pet', () => {
 vi.mock('../../../../src/component/form/pet-form', () => {
   return {
     __esModule: true,
-    PetForm: defineComponent((props: { httpError: HttpError | undefined; initialPet?: PetRequest; submitPet: (pet: PetRequest) => void; }) => {
-      const onSubmit = () => {
-        props.submitPet({ name: 'Brownie', vaccinations: [] });
-      };
+    PetForm: defineComponent(
+      (props: { httpError: HttpError | undefined; initialPet?: PetRequest; submitPet: (pet: PetRequest) => void }) => {
+        const onSubmit = () => {
+          props.submitPet({ name: 'Brownie', vaccinations: [] });
+        };
 
-      return () => (
-        <button
-          data-testid="pet-form-submit"
-          data-has-http-error={!!props.httpError}
-          data-has-initial-pet={!!props.initialPet}
-          onClick={onSubmit}
-        />
-      );
-    }, { props: ['httpError', 'initialPet', 'submitPet'] }),
+        return () => (
+          <button
+            data-testid="pet-form-submit"
+            data-has-http-error={!!props.httpError}
+            data-has-initial-pet={!!props.initialPet}
+            onClick={onSubmit}
+          />
+        );
+      },
+      { props: ['httpError', 'initialPet', 'submitPet'] },
+    ),
   };
 });
 
@@ -56,8 +63,17 @@ test('not found', async () => {
     history: createWebHistory(),
     routes: [
       { path: '/', name: 'Home', component: defineComponent(() => () => <div data-testid="page-home-mock" />) },
-      { path: '/pet/:id/update', name: 'PetUpdate', component: () => import('../../../../src/component/page/pet/update') },
-    ]
+      {
+        path: '/pet',
+        name: 'PetList',
+        component: defineComponent(() => () => <div data-testid="page-pet-list-mock" />),
+      },
+      {
+        path: '/pet/:id/update',
+        name: 'PetUpdate',
+        component: () => import('../../../../src/component/page/pet/update'),
+      },
+    ],
   });
 
   const { container } = render(<RouterView />, {
@@ -111,8 +127,17 @@ test('default', async () => {
     history: createWebHistory(),
     routes: [
       { path: '/', name: 'Home', component: defineComponent(() => () => <div data-testid="page-home-mock" />) },
-      { path: '/pet/:id/update', name: 'PetUpdate', component: () => import('../../../../src/component/page/pet/update') },
-    ]
+      {
+        path: '/pet',
+        name: 'PetList',
+        component: defineComponent(() => () => <div data-testid="page-pet-list-mock" />),
+      },
+      {
+        path: '/pet/:id/update',
+        name: 'PetUpdate',
+        component: () => import('../../../../src/component/page/pet/update'),
+      },
+    ],
   });
 
   const { container } = render(<RouterView />, {
@@ -176,8 +201,17 @@ test('unprocessable entity', async () => {
     history: createWebHistory(),
     routes: [
       { path: '/', name: 'Home', component: defineComponent(() => () => <div data-testid="page-home-mock" />) },
-      { path: '/pet/:id/update', name: 'PetUpdate', component: () => import('../../../../src/component/page/pet/update') },
-    ]
+      {
+        path: '/pet',
+        name: 'PetList',
+        component: defineComponent(() => () => <div data-testid="page-pet-list-mock" />),
+      },
+      {
+        path: '/pet/:id/update',
+        name: 'PetUpdate',
+        component: () => import('../../../../src/component/page/pet/update'),
+      },
+    ],
   });
 
   const { container } = render(<RouterView />, {
@@ -252,9 +286,17 @@ test('successful', async () => {
     history: createWebHistory(),
     routes: [
       { path: '/', name: 'Home', component: defineComponent(() => () => <div data-testid="page-home-mock" />) },
-      { path: '/pet', name: 'PetList', component: defineComponent(() => () => <div data-testid="page-pet-list-mock" />) },
-      { path: '/pet/:id/update', name: 'PetUpdate', component: () => import('../../../../src/component/page/pet/update') },
-    ]
+      {
+        path: '/pet',
+        name: 'PetList',
+        component: defineComponent(() => () => <div data-testid="page-pet-list-mock" />),
+      },
+      {
+        path: '/pet/:id/update',
+        name: 'PetUpdate',
+        component: () => import('../../../../src/component/page/pet/update'),
+      },
+    ],
   });
 
   const { container } = render(<RouterView />, {

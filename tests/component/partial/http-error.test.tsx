@@ -1,8 +1,8 @@
 /** @jsxImportSource vue */
 
 import { render } from '@testing-library/vue';
-import { HttpError as HttpErrorPartial } from '../../../src/component/partial/http-error';
 import { test, expect } from 'vitest';
+import { HttpError as HttpErrorPartial } from '../../../src/component/partial/http-error';
 import { formatHtml } from '../../formatter';
 import { BadRequestOrUnprocessableEntity, HttpError } from '../../../src/client/error';
 

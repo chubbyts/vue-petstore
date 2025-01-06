@@ -2,8 +2,8 @@ import { computed, defineComponent, reactive } from 'vue';
 import type { PetFilters } from '../../model/pet';
 import type { HttpError } from '../../client/error';
 import { createInvalidParametersByName } from '../../client/error';
-import { FieldSet, TextField } from './form';
 import { Button } from '../button';
+import { FieldSet, TextField } from './form';
 
 export const PetFiltersForm = defineComponent(
   (props: {
@@ -32,6 +32,7 @@ export const PetFiltersForm = defineComponent(
             dataTestId="pet-filters-form-name"
             label="Name"
             value={petFilters.name ?? ''}
+            // eslint-disable-next-line functional/immutable-data
             setValue={(value) => (petFilters.name = value === '' ? undefined : value)}
             invalidParameters={groupInvalidParametersByName.value.get('filters[name]') ?? []}
           />

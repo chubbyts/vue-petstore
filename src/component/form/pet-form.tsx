@@ -2,8 +2,8 @@ import { computed, defineComponent, reactive } from 'vue';
 import type { PetRequest } from '../../model/pet';
 import type { HttpError } from '../../client/error';
 import { createInvalidParametersByName } from '../../client/error';
-import { FieldSet, TextField } from './form';
 import { Button } from '../button';
+import { FieldSet, TextField } from './form';
 
 export const PetForm = defineComponent(
   (props: { httpError: HttpError | undefined; initialPet?: PetRequest; submitPet: (pet: PetRequest) => void }) => {
@@ -28,6 +28,7 @@ export const PetForm = defineComponent(
             dataTestId="pet-form-name"
             label="Name"
             value={pet.name}
+            // eslint-disable-next-line functional/immutable-data
             setValue={(value) => (pet.name = value)}
             invalidParameters={groupInvalidParametersByName.value.get('name') ?? []}
           />
@@ -35,6 +36,7 @@ export const PetForm = defineComponent(
             dataTestId="pet-form-tag"
             label="Tag"
             value={pet.tag ?? ''}
+            // eslint-disable-next-line functional/immutable-data
             setValue={(value) => (pet.tag = value === '' ? undefined : value)}
             invalidParameters={groupInvalidParametersByName.value.get('tag') ?? []}
           />
@@ -49,6 +51,7 @@ export const PetForm = defineComponent(
                       label="Name"
                       value={vaccination.name}
                       setValue={(value) =>
+                        // eslint-disable-next-line functional/immutable-data
                         (pet.vaccinations = [
                           ...pet.vaccinations.map((currentVaccination, y) => {
                             if (y === i) {
@@ -67,6 +70,7 @@ export const PetForm = defineComponent(
                         e.preventDefault();
                         e.stopPropagation();
 
+                        // eslint-disable-next-line functional/immutable-data
                         pet.vaccinations = [...pet.vaccinations.filter((_, y) => y !== i)];
                       }}
                       colorTheme="red"
@@ -82,6 +86,7 @@ export const PetForm = defineComponent(
                   e.preventDefault();
                   e.stopPropagation();
 
+                  // eslint-disable-next-line functional/immutable-data
                   pet.vaccinations = [...pet.vaccinations, { name: '' }];
                 }}
                 colorTheme="green"

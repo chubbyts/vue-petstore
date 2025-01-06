@@ -1,8 +1,8 @@
 /** @jsxImportSource vue */
 
 import { render } from '@testing-library/vue';
-import NotFound from '../../../src/component/page/not-found';
 import { test, expect } from 'vitest';
+import NotFound from '../../../src/component/page/not-found';
 import { formatHtml } from '../../formatter';
 
 test('default', () => {

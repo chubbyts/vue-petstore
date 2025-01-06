@@ -1,7 +1,7 @@
+import { ref } from 'vue';
 import { HttpError } from '../client/error';
 import type { ModelListRequest, ModelListResponse, ModelRequest, ModelResponse } from '../model/model';
 import type { CreateClient, DeleteClient, ListClient, ReadClient, UpdateClient } from '../client/client';
-import { ref } from 'vue';
 
 export const createModelResource = <
   MLReq extends ModelListRequest,
@@ -31,21 +31,27 @@ export const createModelResource = <
       throw new Error('Missing listClient');
     }
 
+    // eslint-disable-next-line functional/immutable-data
     loading.value = 'list';
 
     const response = await listClient(req);
 
+    // eslint-disable-next-line functional/no-let
     let success: boolean;
 
     if (response instanceof HttpError) {
+      // eslint-disable-next-line functional/immutable-data
       httpError.value = response;
       success = false;
     } else {
+      // eslint-disable-next-line functional/immutable-data
       httpError.value = undefined;
+      // eslint-disable-next-line functional/immutable-data
       modelList.value = response;
       success = true;
     }
 
+    // eslint-disable-next-line functional/immutable-data
     loading.value = undefined;
 
     return success;
@@ -56,21 +62,27 @@ export const createModelResource = <
       throw new Error('Missing createClient');
     }
 
+    // eslint-disable-next-line functional/immutable-data
     loading.value = 'create';
 
     const response = await createClient(req);
 
+    // eslint-disable-next-line functional/no-let
     let success: boolean;
 
     if (response instanceof HttpError) {
+      // eslint-disable-next-line functional/immutable-data
       httpError.value = response;
       success = false;
     } else {
+      // eslint-disable-next-line functional/immutable-data
       httpError.value = undefined;
+      // eslint-disable-next-line functional/immutable-data
       model.value = response;
       success = true;
     }
 
+    // eslint-disable-next-line functional/immutable-data
     loading.value = undefined;
 
     return success;
@@ -81,21 +93,27 @@ export const createModelResource = <
       throw new Error('Missing readClient');
     }
 
+    // eslint-disable-next-line functional/immutable-data
     loading.value = 'read';
 
     const response = await readClient(id);
 
+    // eslint-disable-next-line functional/no-let
     let success: boolean;
 
     if (response instanceof HttpError) {
+      // eslint-disable-next-line functional/immutable-data
       httpError.value = response;
       success = false;
     } else {
+      // eslint-disable-next-line functional/immutable-data
       httpError.value = undefined;
+      // eslint-disable-next-line functional/immutable-data
       model.value = response;
       success = true;
     }
 
+    // eslint-disable-next-line functional/immutable-data
     loading.value = undefined;
 
     return success;
@@ -106,21 +124,27 @@ export const createModelResource = <
       throw new Error('Missing updateClient');
     }
 
+    // eslint-disable-next-line functional/immutable-data
     loading.value = 'update';
 
     const response = await updateClient(id, req);
 
+    // eslint-disable-next-line functional/no-let
     let success: boolean;
 
     if (response instanceof HttpError) {
+      // eslint-disable-next-line functional/immutable-data
       httpError.value = response;
       success = false;
     } else {
+      // eslint-disable-next-line functional/immutable-data
       httpError.value = undefined;
+      // eslint-disable-next-line functional/immutable-data
       model.value = response;
       success = true;
     }
 
+    // eslint-disable-next-line functional/immutable-data
     loading.value = undefined;
 
     return success;
@@ -131,21 +155,27 @@ export const createModelResource = <
       throw new Error('Missing deleteClient');
     }
 
+    // eslint-disable-next-line functional/immutable-data
     loading.value = 'delete';
 
     const response = await deleteClient(id);
 
+    // eslint-disable-next-line functional/no-let
     let success: boolean;
 
     if (response instanceof HttpError) {
+      // eslint-disable-next-line functional/immutable-data
       httpError.value = response;
       success = false;
     } else {
+      // eslint-disable-next-line functional/immutable-data
       httpError.value = undefined;
+      // eslint-disable-next-line functional/immutable-data
       model.value = undefined;
       success = true;
     }
 
+    // eslint-disable-next-line functional/immutable-data
     loading.value = undefined;
 
     return success;

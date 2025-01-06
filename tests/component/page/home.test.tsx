@@ -1,8 +1,8 @@
 /** @jsxImportSource vue */
 
 import { render } from '@testing-library/vue';
-import Home from '../../../src/component/page/home';
 import { test, expect } from 'vitest';
+import Home from '../../../src/component/page/home';
 import { formatHtml } from '../../formatter';
 
 test('default', () => {

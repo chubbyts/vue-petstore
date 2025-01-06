@@ -1,13 +1,13 @@
 /** @jsxImportSource vue */
 
 import { test, expect, vi } from 'vitest';
-import { formatHtml } from './formatter';
 import { render, screen } from '@testing-library/vue';
-import App from '../src/app';
-import { routes } from '../src/routes';
 import { userEvent } from '@testing-library/user-event';
 import { createRouter, createWebHistory } from 'vue-router';
 import { defineComponent } from 'vue';
+import { routes } from '../src/routes';
+import App from '../src/app';
+import { formatHtml } from './formatter';
 
 vi.mock('../src/component/page/home', () => {
   return {
@@ -54,7 +54,7 @@ vi.mock('../src/component/page/not-found', () => {
 test('close navigation', () => {
   const router = createRouter({
     history: createWebHistory(),
-    routes
+    routes,
   });
 
   const { container } = render(<App />, {
@@ -102,7 +102,7 @@ test('close navigation', () => {
 test('open navigation', async () => {
   const router = createRouter({
     history: createWebHistory(),
-    routes
+    routes,
   });
 
   const { container } = render(<App />, {
@@ -161,7 +161,7 @@ test('open navigation', async () => {
 test('not found', async () => {
   const router = createRouter({
     history: createWebHistory(),
-    routes
+    routes,
   });
 
   const { container } = render(<App />, {
@@ -213,7 +213,7 @@ test('not found', async () => {
 test('pet list', async () => {
   const router = createRouter({
     history: createWebHistory(),
-    routes
+    routes,
   });
 
   const { container } = render(<App />, {
@@ -268,7 +268,7 @@ test('pet list', async () => {
 test('pet create', async () => {
   const router = createRouter({
     history: createWebHistory(),
-    routes
+    routes,
   });
 
   const { container } = render(<App />, {
@@ -320,7 +320,7 @@ test('pet create', async () => {
 test('pet read', async () => {
   const router = createRouter({
     history: createWebHistory(),
-    routes
+    routes,
   });
 
   const { container } = render(<App />, {
@@ -372,7 +372,7 @@ test('pet read', async () => {
 test('pet update', async () => {
   const router = createRouter({
     history: createWebHistory(),
-    routes
+    routes,
   });
 
   const { container } = render(<App />, {

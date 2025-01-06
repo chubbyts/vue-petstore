@@ -1,9 +1,9 @@
-import { defineComponent, onMounted, onUnmounted } from 'vue';
-import { H1 } from '../../heading';
-import { HttpError as HttpErrorPartial } from '../../partial/http-error';
+import { defineComponent, onMounted } from 'vue';
 import { format } from 'date-fns';
 import { de } from 'date-fns/locale';
 import { useRoute } from 'vue-router';
+import { HttpError as HttpErrorPartial } from '../../partial/http-error';
+import { H1 } from '../../heading';
 import { createModelResource } from '../../../hook/create-model-resource';
 import { readPetClient as readClient } from '../../../client/pet';
 import { AnchorButton } from '../../button';
@@ -18,13 +18,10 @@ const PetRead = defineComponent(
     const { model: pet, httpError, actions } = createModelResource({ readClient });
 
     onMounted(() => {
+      // eslint-disable-next-line functional/immutable-data
       document.title = pageTitle;
 
       actions.readModel(id);
-    });
-
-    onUnmounted(() => {
-      document.title = '';
     });
 
     return () => (

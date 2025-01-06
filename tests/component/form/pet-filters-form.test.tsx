@@ -1,17 +1,17 @@
 /** @jsxImportSource vue */
 
 import { test, expect, vi } from 'vitest';
+import { userEvent } from '@testing-library/user-event';
+import { render, screen } from '@testing-library/vue';
 import { formatHtml } from '../../formatter';
 import { PetFiltersForm } from '../../../src/component/form/pet-filters-form';
 import { BadRequest, NetworkError } from '../../../src/client/error';
-import { userEvent } from '@testing-library/user-event';
-import { render, screen } from '@testing-library/vue';
 import type { PetFilters } from '../../../src/model/pet';
 
 test('default', () => {
   const httpError = undefined;
   const initialPetFilters = {};
-  const submitPetFilters = () => { };
+  const submitPetFilters = () => {};
 
   const { container } = render(
     <PetFiltersForm httpError={httpError} initialPetFilters={initialPetFilters} submitPetFilters={submitPetFilters} />,
@@ -45,7 +45,7 @@ test('default', () => {
 test('network error', () => {
   const httpError = new NetworkError({ title: 'network error' });
   const initialPetFilters = {};
-  const submitPetFilters = () => { };
+  const submitPetFilters = () => {};
 
   render(
     <PetFiltersForm httpError={httpError} initialPetFilters={initialPetFilters} submitPetFilters={submitPetFilters} />,
@@ -57,7 +57,7 @@ test('bad request', () => {
     title: 'bad request',
   });
   const initialPetFilters = {};
-  const submitPetFilters = () => { };
+  const submitPetFilters = () => {};
 
   render(
     <PetFiltersForm httpError={httpError} initialPetFilters={initialPetFilters} submitPetFilters={submitPetFilters} />,
@@ -70,7 +70,7 @@ test('bad request - with query string name', () => {
     invalidParameters: [{ name: 'filters[name]', reason: 'reason' }],
   });
   const initialPetFilters = {};
-  const submitPetFilters = () => { };
+  const submitPetFilters = () => {};
 
   const { container } = render(
     <PetFiltersForm httpError={httpError} initialPetFilters={initialPetFilters} submitPetFilters={submitPetFilters} />,
