@@ -74,7 +74,9 @@ test('default', async () => {
     "<div>
       <div data-testid="page-pet-create">
         <!---->
-        <h1 class="mb-4 border-b pb-2 text-4xl font-black">Pet Create</h1>
+        <h1 class="mb-4 border-b border-gray-200 pb-2 text-4xl font-black">
+          Pet Create
+        </h1>
         <button
           data-testid="pet-form-submit"
           data-has-http-error="false"
@@ -133,7 +135,9 @@ test('unprocessable entity', async () => {
           <p class="font-bold">unprocessable entity</p>
           <!----><!----><!---->
         </div>
-        <h1 class="mb-4 border-b pb-2 text-4xl font-black">Pet Create</h1>
+        <h1 class="mb-4 border-b border-gray-200 pb-2 text-4xl font-black">
+          Pet Create
+        </h1>
         <button
           data-testid="pet-form-submit"
           data-has-http-error="true"

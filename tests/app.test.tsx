@@ -67,7 +67,7 @@ test('close navigation', () => {
     "<div>
       <div class="relative flex min-h-full flex-col md:flex-row">
         <nav
-          class="absolute flow-root h-16 w-full bg-gray-900 px-4 py-3 text-2xl font-semibold uppercase leading-relaxed text-gray-100"
+          class="absolute flow-root h-16 w-full bg-gray-900 px-4 py-3 text-2xl leading-relaxed font-semibold text-gray-100 uppercase"
         >
           <button
             class="float-right block border-2 p-2 md:hidden"
@@ -119,7 +119,7 @@ test('open navigation', async () => {
     "<div>
       <div class="relative flex min-h-full flex-col md:flex-row">
         <nav
-          class="absolute flow-root h-16 w-full bg-gray-900 px-4 py-3 text-2xl font-semibold uppercase leading-relaxed text-gray-100"
+          class="absolute flow-root h-16 w-full bg-gray-900 px-4 py-3 text-2xl leading-relaxed font-semibold text-gray-100 uppercase"
         >
           <button
             class="float-right block border-2 p-2 md:hidden"
@@ -176,7 +176,7 @@ test('not found', async () => {
     "<div>
       <div class="relative flex min-h-full flex-col md:flex-row">
         <nav
-          class="absolute flow-root h-16 w-full bg-gray-900 px-4 py-3 text-2xl font-semibold uppercase leading-relaxed text-gray-100"
+          class="absolute flow-root h-16 w-full bg-gray-900 px-4 py-3 text-2xl leading-relaxed font-semibold text-gray-100 uppercase"
         >
           <button
             class="float-right block border-2 p-2 md:hidden"
@@ -228,7 +228,7 @@ test('pet list', async () => {
     "<div>
       <div class="relative flex min-h-full flex-col md:flex-row">
         <nav
-          class="absolute flow-root h-16 w-full bg-gray-900 px-4 py-3 text-2xl font-semibold uppercase leading-relaxed text-gray-100"
+          class="absolute flow-root h-16 w-full bg-gray-900 px-4 py-3 text-2xl leading-relaxed font-semibold text-gray-100 uppercase"
         >
           <button
             class="float-right block border-2 p-2 md:hidden"
@@ -283,7 +283,7 @@ test('pet create', async () => {
     "<div>
       <div class="relative flex min-h-full flex-col md:flex-row">
         <nav
-          class="absolute flow-root h-16 w-full bg-gray-900 px-4 py-3 text-2xl font-semibold uppercase leading-relaxed text-gray-100"
+          class="absolute flow-root h-16 w-full bg-gray-900 px-4 py-3 text-2xl leading-relaxed font-semibold text-gray-100 uppercase"
         >
           <button
             class="float-right block border-2 p-2 md:hidden"
@@ -335,7 +335,7 @@ test('pet read', async () => {
     "<div>
       <div class="relative flex min-h-full flex-col md:flex-row">
         <nav
-          class="absolute flow-root h-16 w-full bg-gray-900 px-4 py-3 text-2xl font-semibold uppercase leading-relaxed text-gray-100"
+          class="absolute flow-root h-16 w-full bg-gray-900 px-4 py-3 text-2xl leading-relaxed font-semibold text-gray-100 uppercase"
         >
           <button
             class="float-right block border-2 p-2 md:hidden"
@@ -387,7 +387,7 @@ test('pet update', async () => {
     "<div>
       <div class="relative flex min-h-full flex-col md:flex-row">
         <nav
-          class="absolute flow-root h-16 w-full bg-gray-900 px-4 py-3 text-2xl font-semibold uppercase leading-relaxed text-gray-100"
+          class="absolute flow-root h-16 w-full bg-gray-900 px-4 py-3 text-2xl leading-relaxed font-semibold text-gray-100 uppercase"
         >
           <button
             class="float-right block border-2 p-2 md:hidden"

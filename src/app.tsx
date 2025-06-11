@@ -11,7 +11,7 @@ const App = defineComponent(() => {
 
   return () => (
     <div class="relative flex min-h-full flex-col md:flex-row">
-      <nav class="absolute flow-root h-16 w-full bg-gray-900 px-4 py-3 text-2xl font-semibold uppercase leading-relaxed text-gray-100">
+      <nav class="absolute flow-root h-16 w-full bg-gray-900 px-4 py-3 text-2xl leading-relaxed font-semibold text-gray-100 uppercase">
         <button class="float-right block border-2 p-2 md:hidden" data-testid="navigation-toggle" onClick={toggleMenu}>
           <span class="block h-2 w-6 border-t-2" />
           <span class="block h-2 w-6 border-t-2" />

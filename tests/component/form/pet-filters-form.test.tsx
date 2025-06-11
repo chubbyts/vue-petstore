@@ -25,7 +25,7 @@ test('default', () => {
             >Name<input
               data-testid="pet-filters-form-name"
               type="text"
-              class="mb-3 mt-2 block w-full border px-3 py-2 border-gray-300"
+              class="mt-2 mb-3 block w-full border px-3 py-2 border-gray-300"
               value=""
             /><!----></label
           ><button
@@ -84,7 +84,7 @@ test('bad request - with query string name', () => {
             >Name<input
               data-testid="pet-filters-form-name"
               type="text"
-              class="mb-3 mt-2 block w-full border px-3 py-2 border-red-600 bg-red-100"
+              class="mt-2 mb-3 block w-full border px-3 py-2 border-red-600 bg-red-100"
               value=""
             />
             <ul class="mb-3">

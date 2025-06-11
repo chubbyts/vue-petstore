@@ -4,7 +4,7 @@ import { defineComponent } from 'vue';
 export const H1 = defineComponent(
   (props: HTMLAttributes, { slots }) => {
     return () => (
-      <h1 {...props} class={`mb-4 border-b pb-2 text-4xl font-black ${props.class ?? ''}`}>
+      <h1 {...props} class={`mb-4 border-b border-gray-200 pb-2 text-4xl font-black ${props.class ?? ''}`}>
         {slots.default()}
       </h1>
     );
