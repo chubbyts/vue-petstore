@@ -1,6 +1,6 @@
 /** @jsxImportSource vue */
 
-import { vi, test, expect } from 'vitest';
+import { vi, test, expect, describe } from 'vitest';
 import { userEvent } from '@testing-library/user-event';
 import { render, screen } from '@testing-library/vue';
 import { createRouter, createWebHistory, RouterView } from 'vue-router';
@@ -80,71 +80,72 @@ vi.mock('../../../../src/component/partial/pagination', () => {
   };
 });
 
-test('default minimal', async () => {
-  mockListPetsClient = async (petListRequest: PetListRequest) => {
-    expect(petListRequest).toEqual({
-      offset: 0,
-      limit: 10,
-      filters: {},
-      sort: {},
-    });
+describe('list', () => {
+  test('default minimal', async () => {
+    mockListPetsClient = async (petListRequest: PetListRequest) => {
+      expect(petListRequest).toEqual({
+        offset: 0,
+        limit: 10,
+        filters: {},
+        sort: {},
+      });
 
-    return {
-      offset: 0,
-      limit: 10,
-      filters: {},
-      sort: {},
-      count: 1,
-      items: [
+      return {
+        offset: 0,
+        limit: 10,
+        filters: {},
+        sort: {},
+        count: 1,
+        items: [
+          {
+            id: '4d783b77-eb09-4603-b99b-f590b605eaa9',
+            createdAt: '2005-08-15T15:52:01+00:00',
+            updatedAt: '2005-08-15T15:55:01+00:00',
+            name: 'Brownie',
+            vaccinations: [],
+            _links: {},
+          },
+        ],
+        _links: {},
+      };
+    };
+
+    mockDeletePetClient = async () => undefined;
+
+    const router = createRouter({
+      history: createWebHistory(),
+      routes: [
+        { path: '/', name: 'Home', component: defineComponent(() => () => <div data-testid="page-home-mock" />) },
+        { path: '/pet', name: 'PetList', component: () => import('../../../../src/component/page/pet/list') },
         {
-          id: '4d783b77-eb09-4603-b99b-f590b605eaa9',
-          createdAt: '2005-08-15T15:52:01+00:00',
-          updatedAt: '2005-08-15T15:55:01+00:00',
-          name: 'Brownie',
-          vaccinations: [],
-          _links: {},
+          path: '/pet/create',
+          name: 'PetCreate',
+          component: defineComponent(() => () => <div data-testid="page-pet-create-mock" />),
+        },
+        {
+          path: '/pet/4d783b77-eb09-4603-b99b-f590b605eaa9',
+          name: 'PetRead',
+          component: defineComponent(() => () => <div data-testid="page-pet-read-mock" />),
+        },
+        {
+          path: '/pet/4d783b77-eb09-4603-b99b-f590b605eaa9/update',
+          name: 'PetUpdate',
+          component: defineComponent(() => () => <div data-testid="page-pet-update-mock" />),
         },
       ],
-      _links: {},
-    };
-  };
+    });
 
-  mockDeletePetClient = async () => undefined;
-
-  const router = createRouter({
-    history: createWebHistory(),
-    routes: [
-      { path: '/', name: 'Home', component: defineComponent(() => () => <div data-testid="page-home-mock" />) },
-      { path: '/pet', name: 'PetList', component: () => import('../../../../src/component/page/pet/list') },
-      {
-        path: '/pet/create',
-        name: 'PetCreate',
-        component: defineComponent(() => () => <div data-testid="page-pet-create-mock" />),
+    const { container } = render(<RouterView />, {
+      global: {
+        plugins: [router],
       },
-      {
-        path: '/pet/4d783b77-eb09-4603-b99b-f590b605eaa9',
-        name: 'PetRead',
-        component: defineComponent(() => () => <div data-testid="page-pet-read-mock" />),
-      },
-      {
-        path: '/pet/4d783b77-eb09-4603-b99b-f590b605eaa9/update',
-        name: 'PetUpdate',
-        component: defineComponent(() => () => <div data-testid="page-pet-update-mock" />),
-      },
-    ],
-  });
+    });
 
-  const { container } = render(<RouterView />, {
-    global: {
-      plugins: [router],
-    },
-  });
+    await router.push('/pet');
 
-  await router.push('/pet');
+    await screen.findByTestId('page-pet-list');
 
-  await screen.findByTestId('page-pet-list');
-
-  expect(formatHtml(container.outerHTML)).toMatchInlineSnapshot(`
+    expect(formatHtml(container.outerHTML)).toMatchInlineSnapshot(`
     "<div>
       <div data-testid="page-pet-list">
         <!---->
@@ -251,41 +252,41 @@ test('default minimal', async () => {
     </div>
     "
   `);
-});
+  });
 
-test('bad request', async () => {
-  mockListPetsClient = async (petListRequest: PetListRequest) => {
-    expect(petListRequest).toEqual({
-      offset: 0,
-      limit: 10,
-      filters: {},
-      sort: {},
+  test('bad request', async () => {
+    mockListPetsClient = async (petListRequest: PetListRequest) => {
+      expect(petListRequest).toEqual({
+        offset: 0,
+        limit: 10,
+        filters: {},
+        sort: {},
+      });
+
+      return new Promise<BadRequest>((resolve) => resolve(new BadRequest({ title: 'bad request' })));
+    };
+
+    mockDeletePetClient = async () => undefined;
+
+    const router = createRouter({
+      history: createWebHistory(),
+      routes: [
+        { path: '/', name: 'Home', component: defineComponent(() => () => <div data-testid="page-home-mock" />) },
+        { path: '/pet', name: 'PetList', component: () => import('../../../../src/component/page/pet/list') },
+      ],
     });
 
-    return new Promise<BadRequest>((resolve) => resolve(new BadRequest({ title: 'bad request' })));
-  };
+    const { container } = render(<RouterView />, {
+      global: {
+        plugins: [router],
+      },
+    });
 
-  mockDeletePetClient = async () => undefined;
+    await router.push('/pet');
 
-  const router = createRouter({
-    history: createWebHistory(),
-    routes: [
-      { path: '/', name: 'Home', component: defineComponent(() => () => <div data-testid="page-home-mock" />) },
-      { path: '/pet', name: 'PetList', component: () => import('../../../../src/component/page/pet/list') },
-    ],
-  });
+    await screen.findByTestId('page-pet-list');
 
-  const { container } = render(<RouterView />, {
-    global: {
-      plugins: [router],
-    },
-  });
-
-  await router.push('/pet');
-
-  await screen.findByTestId('page-pet-list');
-
-  expect(formatHtml(container.outerHTML)).toMatchInlineSnapshot(`
+    expect(formatHtml(container.outerHTML)).toMatchInlineSnapshot(`
     "<div>
       <div data-testid="page-pet-list">
         <div data-testid="http-error" class="mb-6 bg-red-300 px-5 py-4">
@@ -300,80 +301,80 @@ test('bad request', async () => {
     </div>
     "
   `);
-});
+  });
 
-test('default maximal', async () => {
-  mockListPetsClient = async (petListRequest: PetListRequest) => {
-    expect(petListRequest).toEqual({
-      offset: 0,
-      limit: 10,
-      filters: {},
-      sort: {},
-    });
+  test('default maximal', async () => {
+    mockListPetsClient = async (petListRequest: PetListRequest) => {
+      expect(petListRequest).toEqual({
+        offset: 0,
+        limit: 10,
+        filters: {},
+        sort: {},
+      });
 
-    return {
-      offset: 0,
-      limit: 10,
-      filters: {},
-      sort: {},
-      count: 1,
-      items: [
-        {
-          id: '4d783b77-eb09-4603-b99b-f590b605eaa9',
-          createdAt: '2005-08-15T15:52:01+00:00',
-          updatedAt: '2005-08-15T15:55:01+00:00',
-          name: 'Brownie',
-          tag: '0001-000',
-          vaccinations: [{ name: 'Rabies' }],
-          _links: {
-            read: { href: '/api/pets/4d783b77-eb09-4603-b99b-f590b605eaa9' },
-            update: { href: '/api/pets/4d783b77-eb09-4603-b99b-f590b605eaa9' },
-            delete: { href: '/api/pets/4d783b77-eb09-4603-b99b-f590b605eaa9' },
+      return {
+        offset: 0,
+        limit: 10,
+        filters: {},
+        sort: {},
+        count: 1,
+        items: [
+          {
+            id: '4d783b77-eb09-4603-b99b-f590b605eaa9',
+            createdAt: '2005-08-15T15:52:01+00:00',
+            updatedAt: '2005-08-15T15:55:01+00:00',
+            name: 'Brownie',
+            tag: '0001-000',
+            vaccinations: [{ name: 'Rabies' }],
+            _links: {
+              read: { href: '/api/pets/4d783b77-eb09-4603-b99b-f590b605eaa9' },
+              update: { href: '/api/pets/4d783b77-eb09-4603-b99b-f590b605eaa9' },
+              delete: { href: '/api/pets/4d783b77-eb09-4603-b99b-f590b605eaa9' },
+            },
           },
+        ],
+        _links: {
+          create: { href: '/api/pets' },
+        },
+      };
+    };
+
+    mockDeletePetClient = async () => undefined;
+
+    const router = createRouter({
+      history: createWebHistory(),
+      routes: [
+        { path: '/', name: 'Home', component: defineComponent(() => () => <div data-testid="page-home-mock" />) },
+        { path: '/pet', name: 'PetList', component: () => import('../../../../src/component/page/pet/list') },
+        {
+          path: '/pet/create',
+          name: 'PetCreate',
+          component: defineComponent(() => () => <div data-testid="page-pet-create-mock" />),
+        },
+        {
+          path: '/pet/4d783b77-eb09-4603-b99b-f590b605eaa9',
+          name: 'PetRead',
+          component: defineComponent(() => () => <div data-testid="page-pet-read-mock" />),
+        },
+        {
+          path: '/pet/4d783b77-eb09-4603-b99b-f590b605eaa9/update',
+          name: 'PetUpdate',
+          component: defineComponent(() => () => <div data-testid="page-pet-update-mock" />),
         },
       ],
-      _links: {
-        create: { href: '/api/pets' },
+    });
+
+    const { container } = render(<RouterView />, {
+      global: {
+        plugins: [router],
       },
-    };
-  };
+    });
 
-  mockDeletePetClient = async () => undefined;
+    await router.push('/pet');
 
-  const router = createRouter({
-    history: createWebHistory(),
-    routes: [
-      { path: '/', name: 'Home', component: defineComponent(() => () => <div data-testid="page-home-mock" />) },
-      { path: '/pet', name: 'PetList', component: () => import('../../../../src/component/page/pet/list') },
-      {
-        path: '/pet/create',
-        name: 'PetCreate',
-        component: defineComponent(() => () => <div data-testid="page-pet-create-mock" />),
-      },
-      {
-        path: '/pet/4d783b77-eb09-4603-b99b-f590b605eaa9',
-        name: 'PetRead',
-        component: defineComponent(() => () => <div data-testid="page-pet-read-mock" />),
-      },
-      {
-        path: '/pet/4d783b77-eb09-4603-b99b-f590b605eaa9/update',
-        name: 'PetUpdate',
-        component: defineComponent(() => () => <div data-testid="page-pet-update-mock" />),
-      },
-    ],
-  });
+    await screen.findByTestId('page-pet-list');
 
-  const { container } = render(<RouterView />, {
-    global: {
-      plugins: [router],
-    },
-  });
-
-  await router.push('/pet');
-
-  await screen.findByTestId('page-pet-list');
-
-  expect(formatHtml(container.outerHTML)).toMatchInlineSnapshot(`
+    expect(formatHtml(container.outerHTML)).toMatchInlineSnapshot(`
     "<div>
       <div data-testid="page-pet-list">
         <!---->
@@ -501,403 +502,404 @@ test('default maximal', async () => {
     </div>
     "
   `);
-});
+  });
 
-test('delete error', async () => {
-  mockListPetsClient = async (petListRequest: PetListRequest) => {
-    expect(petListRequest).toEqual({
-      offset: 0,
-      limit: 10,
-      filters: {},
-      sort: {},
-    });
+  test('delete error', async () => {
+    mockListPetsClient = async (petListRequest: PetListRequest) => {
+      expect(petListRequest).toEqual({
+        offset: 0,
+        limit: 10,
+        filters: {},
+        sort: {},
+      });
 
-    return {
-      offset: 0,
-      limit: 10,
-      filters: {},
-      sort: {},
-      count: 1,
-      items: [
-        {
-          id: '4d783b77-eb09-4603-b99b-f590b605eaa9',
-          createdAt: '2005-08-15T15:52:01+00:00',
-          updatedAt: '2005-08-15T15:55:01+00:00',
-          name: 'Brownie',
-          tag: '0001-000',
-          vaccinations: [{ name: 'Rabies' }],
-          _links: {
-            read: { href: '/api/pets/4d783b77-eb09-4603-b99b-f590b605eaa9' },
-            update: { href: '/api/pets/4d783b77-eb09-4603-b99b-f590b605eaa9' },
-            delete: { href: '/api/pets/4d783b77-eb09-4603-b99b-f590b605eaa9' },
+      return {
+        offset: 0,
+        limit: 10,
+        filters: {},
+        sort: {},
+        count: 1,
+        items: [
+          {
+            id: '4d783b77-eb09-4603-b99b-f590b605eaa9',
+            createdAt: '2005-08-15T15:52:01+00:00',
+            updatedAt: '2005-08-15T15:55:01+00:00',
+            name: 'Brownie',
+            tag: '0001-000',
+            vaccinations: [{ name: 'Rabies' }],
+            _links: {
+              read: { href: '/api/pets/4d783b77-eb09-4603-b99b-f590b605eaa9' },
+              update: { href: '/api/pets/4d783b77-eb09-4603-b99b-f590b605eaa9' },
+              delete: { href: '/api/pets/4d783b77-eb09-4603-b99b-f590b605eaa9' },
+            },
           },
+        ],
+        _links: {
+          create: { href: '/api/pets' },
+        },
+      };
+    };
+
+    mockDeletePetClient = async (id: string) => {
+      expect(id).toBe('4d783b77-eb09-4603-b99b-f590b605eaa9');
+
+      return new NetworkError({ title: 'network error' });
+    };
+
+    const router = createRouter({
+      history: createWebHistory(),
+      routes: [
+        { path: '/', name: 'Home', component: defineComponent(() => () => <div data-testid="page-home-mock" />) },
+        { path: '/pet', name: 'PetList', component: () => import('../../../../src/component/page/pet/list') },
+        {
+          path: '/pet/create',
+          name: 'PetCreate',
+          component: defineComponent(() => () => <div data-testid="page-pet-create-mock" />),
+        },
+        {
+          path: '/pet/4d783b77-eb09-4603-b99b-f590b605eaa9',
+          name: 'PetRead',
+          component: defineComponent(() => () => <div data-testid="page-pet-read-mock" />),
+        },
+        {
+          path: '/pet/4d783b77-eb09-4603-b99b-f590b605eaa9/update',
+          name: 'PetUpdate',
+          component: defineComponent(() => () => <div data-testid="page-pet-update-mock" />),
         },
       ],
-      _links: {
-        create: { href: '/api/pets' },
+    });
+
+    render(<RouterView />, {
+      global: {
+        plugins: [router],
       },
-    };
-  };
+    });
 
-  mockDeletePetClient = async (id: string) => {
-    expect(id).toBe('4d783b77-eb09-4603-b99b-f590b605eaa9');
+    await router.push('/pet');
 
-    return new NetworkError({ title: 'network error' });
-  };
+    await screen.findByTestId('page-pet-list');
 
-  const router = createRouter({
-    history: createWebHistory(),
-    routes: [
-      { path: '/', name: 'Home', component: defineComponent(() => () => <div data-testid="page-home-mock" />) },
-      { path: '/pet', name: 'PetList', component: () => import('../../../../src/component/page/pet/list') },
-      {
-        path: '/pet/create',
-        name: 'PetCreate',
-        component: defineComponent(() => () => <div data-testid="page-pet-create-mock" />),
-      },
-      {
-        path: '/pet/4d783b77-eb09-4603-b99b-f590b605eaa9',
-        name: 'PetRead',
-        component: defineComponent(() => () => <div data-testid="page-pet-read-mock" />),
-      },
-      {
-        path: '/pet/4d783b77-eb09-4603-b99b-f590b605eaa9/update',
-        name: 'PetUpdate',
-        component: defineComponent(() => () => <div data-testid="page-pet-update-mock" />),
-      },
-    ],
-  });
+    const removeButton = await screen.findByTestId('remove-pet-0');
 
-  render(<RouterView />, {
-    global: {
-      plugins: [router],
-    },
-  });
+    await userEvent.click(removeButton);
 
-  await router.push('/pet');
+    await screen.findByTestId('http-error');
 
-  await screen.findByTestId('page-pet-list');
-
-  const removeButton = await screen.findByTestId('remove-pet-0');
-
-  await userEvent.click(removeButton);
-
-  await screen.findByTestId('http-error');
-
-  expect(formatHtml((await screen.findByTestId('http-error')).outerHTML)).toMatchInlineSnapshot(`
+    expect(formatHtml((await screen.findByTestId('http-error')).outerHTML)).toMatchInlineSnapshot(`
     "<div data-testid="http-error" class="mb-6 bg-red-300 px-5 py-4">
       <p class="font-bold">network error</p>
       <!----><!----><!---->
     </div>
     "
   `);
-});
-
-test('delete success', async () => {
-  const petListCalls: Array<{ parameters: [PetListRequest]; return: Promise<PetListResponse> }> = [
-    {
-      parameters: [
-        {
-          offset: 0,
-          limit: 10,
-          filters: {},
-          sort: {},
-        },
-      ],
-      return: Promise.resolve({
-        offset: 0,
-        limit: 10,
-        filters: {},
-        sort: {},
-        count: 1,
-        items: [
-          {
-            id: '4d783b77-eb09-4603-b99b-f590b605eaa9',
-            createdAt: '2005-08-15T15:52:01+00:00',
-            updatedAt: '2005-08-15T15:55:01+00:00',
-            name: 'Brownie',
-            tag: '0001-000',
-            vaccinations: [{ name: 'Rabies' }],
-            _links: {
-              read: { href: '/api/pets/4d783b77-eb09-4603-b99b-f590b605eaa9' },
-              update: { href: '/api/pets/4d783b77-eb09-4603-b99b-f590b605eaa9' },
-              delete: { href: '/api/pets/4d783b77-eb09-4603-b99b-f590b605eaa9' },
-            },
-          },
-        ],
-        _links: {
-          create: { href: '/api/pets' },
-        },
-      }),
-    },
-    {
-      parameters: [
-        {
-          offset: 0,
-          limit: 10,
-          filters: {},
-          sort: {},
-        },
-      ],
-      return: Promise.resolve({
-        offset: 0,
-        limit: 10,
-        filters: {},
-        sort: {},
-        count: 1,
-        items: [
-          {
-            id: '4d783b77-eb09-4603-b99b-f590b605eaa9',
-            createdAt: '2005-08-15T15:52:01+00:00',
-            updatedAt: '2005-08-15T15:55:01+00:00',
-            name: 'Brownie',
-            tag: '0001-000',
-            vaccinations: [{ name: 'Rabies' }],
-            _links: {
-              read: { href: '/api/pets/4d783b77-eb09-4603-b99b-f590b605eaa9' },
-              update: { href: '/api/pets/4d783b77-eb09-4603-b99b-f590b605eaa9' },
-              delete: { href: '/api/pets/4d783b77-eb09-4603-b99b-f590b605eaa9' },
-            },
-          },
-        ],
-        _links: {
-          create: { href: '/api/pets' },
-        },
-      }),
-    },
-  ];
-
-  mockListPetsClient = async (petListRequest: PetListRequest) => {
-    // eslint-disable-next-line functional/immutable-data
-    const petListCall = petListCalls.shift();
-    if (!petListCall) {
-      throw new Error('Missing call');
-    }
-
-    expect(petListRequest).toEqual(petListCall.parameters[0]);
-
-    return petListCall.return;
-  };
-
-  mockDeletePetClient = async (id: string) => {
-    expect(id).toBe('4d783b77-eb09-4603-b99b-f590b605eaa9');
-
-    return undefined;
-  };
-
-  const router = createRouter({
-    history: createWebHistory(),
-    routes: [
-      { path: '/', name: 'Home', component: defineComponent(() => () => <div data-testid="page-home-mock" />) },
-      { path: '/pet', name: 'PetList', component: () => import('../../../../src/component/page/pet/list') },
-      {
-        path: '/pet/create',
-        name: 'PetCreate',
-        component: defineComponent(() => () => <div data-testid="page-pet-create-mock" />),
-      },
-      {
-        path: '/pet/4d783b77-eb09-4603-b99b-f590b605eaa9',
-        name: 'PetRead',
-        component: defineComponent(() => () => <div data-testid="page-pet-read-mock" />),
-      },
-      {
-        path: '/pet/4d783b77-eb09-4603-b99b-f590b605eaa9/update',
-        name: 'PetUpdate',
-        component: defineComponent(() => () => <div data-testid="page-pet-update-mock" />),
-      },
-    ],
   });
 
-  render(<RouterView />, {
-    global: {
-      plugins: [router],
-    },
-  });
-
-  await router.push('/pet');
-
-  await screen.findByTestId('page-pet-list');
-
-  const removeButton = await screen.findByTestId('remove-pet-0');
-
-  await userEvent.click(removeButton);
-});
-
-test('submit', async () => {
-  const petListCalls: Array<{ parameters: [PetListRequest]; return: Promise<PetListResponse> }> = [
-    {
-      parameters: [
-        {
+  test('delete success', async () => {
+    const petListCalls: Array<{ parameters: [PetListRequest]; return: Promise<PetListResponse> }> = [
+      {
+        parameters: [
+          {
+            offset: 0,
+            limit: 10,
+            filters: {},
+            sort: {},
+          },
+        ],
+        return: Promise.resolve({
           offset: 0,
           limit: 10,
           filters: {},
           sort: {},
-        },
-      ],
-      return: Promise.resolve({
-        offset: 0,
-        limit: 10,
-        filters: {},
-        sort: {},
-        count: 1,
-        items: [
-          {
-            id: '4d783b77-eb09-4603-b99b-f590b605eaa9',
-            createdAt: '2005-08-15T15:52:01+00:00',
-            updatedAt: '2005-08-15T15:55:01+00:00',
-            name: 'Brownie',
-            tag: '0001-000',
-            vaccinations: [{ name: 'Rabies' }],
-            _links: {
-              read: { href: '/api/pets/4d783b77-eb09-4603-b99b-f590b605eaa9' },
-              update: { href: '/api/pets/4d783b77-eb09-4603-b99b-f590b605eaa9' },
-              delete: { href: '/api/pets/4d783b77-eb09-4603-b99b-f590b605eaa9' },
+          count: 1,
+          items: [
+            {
+              id: '4d783b77-eb09-4603-b99b-f590b605eaa9',
+              createdAt: '2005-08-15T15:52:01+00:00',
+              updatedAt: '2005-08-15T15:55:01+00:00',
+              name: 'Brownie',
+              tag: '0001-000',
+              vaccinations: [{ name: 'Rabies' }],
+              _links: {
+                read: { href: '/api/pets/4d783b77-eb09-4603-b99b-f590b605eaa9' },
+                update: { href: '/api/pets/4d783b77-eb09-4603-b99b-f590b605eaa9' },
+                delete: { href: '/api/pets/4d783b77-eb09-4603-b99b-f590b605eaa9' },
+              },
             },
+          ],
+          _links: {
+            create: { href: '/api/pets' },
+          },
+        }),
+      },
+      {
+        parameters: [
+          {
+            offset: 0,
+            limit: 10,
+            filters: {},
+            sort: {},
           },
         ],
-        _links: {
-          create: { href: '/api/pets' },
-        },
-      }),
-    },
-    {
-      parameters: [
+        return: Promise.resolve({
+          offset: 0,
+          limit: 10,
+          filters: {},
+          sort: {},
+          count: 1,
+          items: [
+            {
+              id: '4d783b77-eb09-4603-b99b-f590b605eaa9',
+              createdAt: '2005-08-15T15:52:01+00:00',
+              updatedAt: '2005-08-15T15:55:01+00:00',
+              name: 'Brownie',
+              tag: '0001-000',
+              vaccinations: [{ name: 'Rabies' }],
+              _links: {
+                read: { href: '/api/pets/4d783b77-eb09-4603-b99b-f590b605eaa9' },
+                update: { href: '/api/pets/4d783b77-eb09-4603-b99b-f590b605eaa9' },
+                delete: { href: '/api/pets/4d783b77-eb09-4603-b99b-f590b605eaa9' },
+              },
+            },
+          ],
+          _links: {
+            create: { href: '/api/pets' },
+          },
+        }),
+      },
+    ];
+
+    mockListPetsClient = async (petListRequest: PetListRequest) => {
+      // eslint-disable-next-line functional/immutable-data
+      const petListCall = petListCalls.shift();
+      if (!petListCall) {
+        throw new Error('Missing call');
+      }
+
+      expect(petListRequest).toEqual(petListCall.parameters[0]);
+
+      return petListCall.return;
+    };
+
+    mockDeletePetClient = async (id: string) => {
+      expect(id).toBe('4d783b77-eb09-4603-b99b-f590b605eaa9');
+
+      return undefined;
+    };
+
+    const router = createRouter({
+      history: createWebHistory(),
+      routes: [
+        { path: '/', name: 'Home', component: defineComponent(() => () => <div data-testid="page-home-mock" />) },
+        { path: '/pet', name: 'PetList', component: () => import('../../../../src/component/page/pet/list') },
         {
+          path: '/pet/create',
+          name: 'PetCreate',
+          component: defineComponent(() => () => <div data-testid="page-pet-create-mock" />),
+        },
+        {
+          path: '/pet/4d783b77-eb09-4603-b99b-f590b605eaa9',
+          name: 'PetRead',
+          component: defineComponent(() => () => <div data-testid="page-pet-read-mock" />),
+        },
+        {
+          path: '/pet/4d783b77-eb09-4603-b99b-f590b605eaa9/update',
+          name: 'PetUpdate',
+          component: defineComponent(() => () => <div data-testid="page-pet-update-mock" />),
+        },
+      ],
+    });
+
+    render(<RouterView />, {
+      global: {
+        plugins: [router],
+      },
+    });
+
+    await router.push('/pet');
+
+    await screen.findByTestId('page-pet-list');
+
+    const removeButton = await screen.findByTestId('remove-pet-0');
+
+    await userEvent.click(removeButton);
+  });
+
+  test('submit', async () => {
+    const petListCalls: Array<{ parameters: [PetListRequest]; return: Promise<PetListResponse> }> = [
+      {
+        parameters: [
+          {
+            offset: 0,
+            limit: 10,
+            filters: {},
+            sort: {},
+          },
+        ],
+        return: Promise.resolve({
+          offset: 0,
+          limit: 10,
+          filters: {},
+          sort: {},
+          count: 1,
+          items: [
+            {
+              id: '4d783b77-eb09-4603-b99b-f590b605eaa9',
+              createdAt: '2005-08-15T15:52:01+00:00',
+              updatedAt: '2005-08-15T15:55:01+00:00',
+              name: 'Brownie',
+              tag: '0001-000',
+              vaccinations: [{ name: 'Rabies' }],
+              _links: {
+                read: { href: '/api/pets/4d783b77-eb09-4603-b99b-f590b605eaa9' },
+                update: { href: '/api/pets/4d783b77-eb09-4603-b99b-f590b605eaa9' },
+                delete: { href: '/api/pets/4d783b77-eb09-4603-b99b-f590b605eaa9' },
+              },
+            },
+          ],
+          _links: {
+            create: { href: '/api/pets' },
+          },
+        }),
+      },
+      {
+        parameters: [
+          {
+            offset: 0,
+            limit: 10,
+            filters: {},
+            sort: { name: 'desc' },
+          },
+        ],
+        return: Promise.resolve({
           offset: 0,
           limit: 10,
           filters: {},
           sort: { name: 'desc' },
-        },
-      ],
-      return: Promise.resolve({
-        offset: 0,
-        limit: 10,
-        filters: {},
-        sort: { name: 'desc' },
-        count: 1,
-        items: [
-          {
-            id: '4d783b77-eb09-4603-b99b-f590b605eaa9',
-            createdAt: '2005-08-15T15:52:01+00:00',
-            updatedAt: '2005-08-15T15:55:01+00:00',
-            name: 'Blacky',
-            tag: '0002-000',
-            vaccinations: [{ name: 'Rabies' }],
-            _links: {
-              read: { href: '/api/pets/4d783b77-eb09-4603-b99b-f590b605eaa9' },
-              update: { href: '/api/pets/4d783b77-eb09-4603-b99b-f590b605eaa9' },
-              delete: { href: '/api/pets/4d783b77-eb09-4603-b99b-f590b605eaa9' },
+          count: 1,
+          items: [
+            {
+              id: '4d783b77-eb09-4603-b99b-f590b605eaa9',
+              createdAt: '2005-08-15T15:52:01+00:00',
+              updatedAt: '2005-08-15T15:55:01+00:00',
+              name: 'Blacky',
+              tag: '0002-000',
+              vaccinations: [{ name: 'Rabies' }],
+              _links: {
+                read: { href: '/api/pets/4d783b77-eb09-4603-b99b-f590b605eaa9' },
+                update: { href: '/api/pets/4d783b77-eb09-4603-b99b-f590b605eaa9' },
+                delete: { href: '/api/pets/4d783b77-eb09-4603-b99b-f590b605eaa9' },
+              },
             },
+          ],
+          _links: {
+            create: { href: '/api/pets' },
+          },
+        }),
+      },
+      {
+        parameters: [
+          {
+            offset: 0,
+            limit: 10,
+            filters: { name: 'Brownie' },
+            sort: { name: 'desc' },
           },
         ],
-        _links: {
-          create: { href: '/api/pets' },
-        },
-      }),
-    },
-    {
-      parameters: [
-        {
+        return: Promise.resolve({
           offset: 0,
           limit: 10,
           filters: { name: 'Brownie' },
           sort: { name: 'desc' },
-        },
-      ],
-      return: Promise.resolve({
-        offset: 0,
-        limit: 10,
-        filters: { name: 'Brownie' },
-        sort: { name: 'desc' },
-        count: 0,
-        items: [],
-        _links: {
-          create: { href: '/api/pets' },
-        },
-      }),
-    },
-    {
-      parameters: [
-        {
+          count: 0,
+          items: [],
+          _links: {
+            create: { href: '/api/pets' },
+          },
+        }),
+      },
+      {
+        parameters: [
+          {
+            offset: 10,
+            limit: 10,
+            filters: { name: 'Brownie' },
+            sort: { name: 'desc' },
+          },
+        ],
+        return: Promise.resolve({
           offset: 10,
           limit: 10,
           filters: { name: 'Brownie' },
           sort: { name: 'desc' },
+          count: 0,
+          items: [],
+          _links: {
+            create: { href: '/api/pets' },
+          },
+        }),
+      },
+    ];
+
+    mockListPetsClient = async (petListRequest: PetListRequest) => {
+      // eslint-disable-next-line functional/immutable-data
+      const petListCall = petListCalls.shift();
+      if (!petListCall) {
+        throw new Error('Missing call');
+      }
+
+      expect(petListRequest).toEqual(petListCall.parameters[0]);
+
+      return petListCall.return;
+    };
+
+    mockDeletePetClient = async () => undefined;
+
+    const router = createRouter({
+      history: createWebHistory(),
+      routes: [
+        { path: '/', name: 'Home', component: defineComponent(() => () => <div data-testid="page-home-mock" />) },
+        { path: '/pet', name: 'PetList', component: () => import('../../../../src/component/page/pet/list') },
+        {
+          path: '/pet/create',
+          name: 'PetCreate',
+          component: defineComponent(() => () => <div data-testid="page-pet-create-mock" />),
+        },
+        {
+          path: '/pet/4d783b77-eb09-4603-b99b-f590b605eaa9',
+          name: 'PetRead',
+          component: defineComponent(() => () => <div data-testid="page-pet-read-mock" />),
+        },
+        {
+          path: '/pet/4d783b77-eb09-4603-b99b-f590b605eaa9/update',
+          name: 'PetUpdate',
+          component: defineComponent(() => () => <div data-testid="page-pet-update-mock" />),
         },
       ],
-      return: Promise.resolve({
-        offset: 10,
-        limit: 10,
-        filters: { name: 'Brownie' },
-        sort: { name: 'desc' },
-        count: 0,
-        items: [],
-        _links: {
-          create: { href: '/api/pets' },
-        },
-      }),
-    },
-  ];
+    });
 
-  mockListPetsClient = async (petListRequest: PetListRequest) => {
-    // eslint-disable-next-line functional/immutable-data
-    const petListCall = petListCalls.shift();
-    if (!petListCall) {
-      throw new Error('Missing call');
-    }
-
-    expect(petListRequest).toEqual(petListCall.parameters[0]);
-
-    return petListCall.return;
-  };
-
-  mockDeletePetClient = async () => undefined;
-
-  const router = createRouter({
-    history: createWebHistory(),
-    routes: [
-      { path: '/', name: 'Home', component: defineComponent(() => () => <div data-testid="page-home-mock" />) },
-      { path: '/pet', name: 'PetList', component: () => import('../../../../src/component/page/pet/list') },
-      {
-        path: '/pet/create',
-        name: 'PetCreate',
-        component: defineComponent(() => () => <div data-testid="page-pet-create-mock" />),
+    render(<RouterView />, {
+      global: {
+        plugins: [router],
       },
-      {
-        path: '/pet/4d783b77-eb09-4603-b99b-f590b605eaa9',
-        name: 'PetRead',
-        component: defineComponent(() => () => <div data-testid="page-pet-read-mock" />),
-      },
-      {
-        path: '/pet/4d783b77-eb09-4603-b99b-f590b605eaa9/update',
-        name: 'PetUpdate',
-        component: defineComponent(() => () => <div data-testid="page-pet-update-mock" />),
-      },
-    ],
+    });
+
+    await router.push('/pet');
+    await screen.findByTestId('page-pet-list');
+
+    const petSortNameSubmitButton = await screen.findByTestId('pet-sort-name-desc');
+
+    await userEvent.click(petSortNameSubmitButton);
+
+    await screen.findByTestId('page-pet-list');
+
+    const petFiltersFormSubmitButton = await screen.findByTestId('pet-filters-form-submit');
+
+    await userEvent.click(petFiltersFormSubmitButton);
+
+    await screen.findByTestId('page-pet-list');
+
+    const paginationNextButton = await screen.findByTestId('pagination-next');
+
+    await userEvent.click(paginationNextButton);
   });
-
-  render(<RouterView />, {
-    global: {
-      plugins: [router],
-    },
-  });
-
-  await router.push('/pet');
-  await screen.findByTestId('page-pet-list');
-
-  const petSortNameSubmitButton = await screen.findByTestId('pet-sort-name-desc');
-
-  await userEvent.click(petSortNameSubmitButton);
-
-  await screen.findByTestId('page-pet-list');
-
-  const petFiltersFormSubmitButton = await screen.findByTestId('pet-filters-form-submit');
-
-  await userEvent.click(petFiltersFormSubmitButton);
-
-  await screen.findByTestId('page-pet-list');
-
-  const paginationNextButton = await screen.findByTestId('pagination-next');
-
-  await userEvent.click(paginationNextButton);
 });

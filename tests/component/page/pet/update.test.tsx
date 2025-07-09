@@ -1,6 +1,6 @@
 /** @jsxImportSource vue */
 
-import { vi, test, expect } from 'vitest';
+import { vi, test, expect, describe } from 'vitest';
 import { render, screen } from '@testing-library/vue';
 import { userEvent } from '@testing-library/user-event';
 import { defineComponent } from 'vue';
@@ -52,41 +52,42 @@ vi.mock('../../../../src/component/form/pet-form', () => {
   };
 });
 
-test('not found', async () => {
-  mockReadPetClient = async (id: string) => {
-    expect(id).toBe('4d783b77-eb09-4603-b99b-f590b605eaa9');
+describe('update', () => {
+  test('not found', async () => {
+    mockReadPetClient = async (id: string) => {
+      expect(id).toBe('4d783b77-eb09-4603-b99b-f590b605eaa9');
 
-    return new Promise<NotFound>((resolve) => resolve(new NotFound({ title: 'title' })));
-  };
+      return new Promise<NotFound>((resolve) => resolve(new NotFound({ title: 'title' })));
+    };
 
-  const router = createRouter({
-    history: createWebHistory(),
-    routes: [
-      { path: '/', name: 'Home', component: defineComponent(() => () => <div data-testid="page-home-mock" />) },
-      {
-        path: '/pet',
-        name: 'PetList',
-        component: defineComponent(() => () => <div data-testid="page-pet-list-mock" />),
+    const router = createRouter({
+      history: createWebHistory(),
+      routes: [
+        { path: '/', name: 'Home', component: defineComponent(() => () => <div data-testid="page-home-mock" />) },
+        {
+          path: '/pet',
+          name: 'PetList',
+          component: defineComponent(() => () => <div data-testid="page-pet-list-mock" />),
+        },
+        {
+          path: '/pet/:id/update',
+          name: 'PetUpdate',
+          component: () => import('../../../../src/component/page/pet/update'),
+        },
+      ],
+    });
+
+    const { container } = render(<RouterView />, {
+      global: {
+        plugins: [router],
       },
-      {
-        path: '/pet/:id/update',
-        name: 'PetUpdate',
-        component: () => import('../../../../src/component/page/pet/update'),
-      },
-    ],
-  });
+    });
 
-  const { container } = render(<RouterView />, {
-    global: {
-      plugins: [router],
-    },
-  });
+    await router.push('/pet/4d783b77-eb09-4603-b99b-f590b605eaa9/update');
 
-  await router.push('/pet/4d783b77-eb09-4603-b99b-f590b605eaa9/update');
+    await screen.findByTestId('page-pet-update');
 
-  await screen.findByTestId('page-pet-update');
-
-  expect(formatHtml(container.outerHTML)).toMatchInlineSnapshot(`
+    expect(formatHtml(container.outerHTML)).toMatchInlineSnapshot(`
     "<div>
       <div data-testid="page-pet-update">
         <div data-testid="http-error" class="mb-6 bg-red-300 px-5 py-4">
@@ -106,53 +107,53 @@ test('not found', async () => {
     </div>
     "
   `);
-});
-
-test('default', async () => {
-  const petResponse: PetResponse = {
-    id: '4d783b77-eb09-4603-b99b-f590b605eaa9',
-    createdAt: '2005-08-15T15:52:01+00:00',
-    updatedAt: '2005-08-15T15:55:01+00:00',
-    name: 'Brownie',
-    tag: '0001-000',
-    vaccinations: [{ name: 'Rabies' }],
-    _links: {},
-  };
-
-  mockReadPetClient = async (id: string) => {
-    expect(id).toBe('4d783b77-eb09-4603-b99b-f590b605eaa9');
-
-    return new Promise<PetResponse>((resolve) => resolve(petResponse));
-  };
-
-  const router = createRouter({
-    history: createWebHistory(),
-    routes: [
-      { path: '/', name: 'Home', component: defineComponent(() => () => <div data-testid="page-home-mock" />) },
-      {
-        path: '/pet',
-        name: 'PetList',
-        component: defineComponent(() => () => <div data-testid="page-pet-list-mock" />),
-      },
-      {
-        path: '/pet/:id/update',
-        name: 'PetUpdate',
-        component: () => import('../../../../src/component/page/pet/update'),
-      },
-    ],
   });
 
-  const { container } = render(<RouterView />, {
-    global: {
-      plugins: [router],
-    },
-  });
+  test('default', async () => {
+    const petResponse: PetResponse = {
+      id: '4d783b77-eb09-4603-b99b-f590b605eaa9',
+      createdAt: '2005-08-15T15:52:01+00:00',
+      updatedAt: '2005-08-15T15:55:01+00:00',
+      name: 'Brownie',
+      tag: '0001-000',
+      vaccinations: [{ name: 'Rabies' }],
+      _links: {},
+    };
 
-  await router.push('/pet/4d783b77-eb09-4603-b99b-f590b605eaa9/update');
+    mockReadPetClient = async (id: string) => {
+      expect(id).toBe('4d783b77-eb09-4603-b99b-f590b605eaa9');
 
-  await screen.findByTestId('page-pet-update');
+      return new Promise<PetResponse>((resolve) => resolve(petResponse));
+    };
 
-  expect(formatHtml(container.outerHTML)).toMatchInlineSnapshot(`
+    const router = createRouter({
+      history: createWebHistory(),
+      routes: [
+        { path: '/', name: 'Home', component: defineComponent(() => () => <div data-testid="page-home-mock" />) },
+        {
+          path: '/pet',
+          name: 'PetList',
+          component: defineComponent(() => () => <div data-testid="page-pet-list-mock" />),
+        },
+        {
+          path: '/pet/:id/update',
+          name: 'PetUpdate',
+          component: () => import('../../../../src/component/page/pet/update'),
+        },
+      ],
+    });
+
+    const { container } = render(<RouterView />, {
+      global: {
+        plugins: [router],
+      },
+    });
+
+    await router.push('/pet/4d783b77-eb09-4603-b99b-f590b605eaa9/update');
+
+    await screen.findByTestId('page-pet-update');
+
+    expect(formatHtml(container.outerHTML)).toMatchInlineSnapshot(`
     "<div>
       <div data-testid="page-pet-update">
         <!---->
@@ -174,65 +175,65 @@ test('default', async () => {
     </div>
     "
   `);
-});
-
-test('unprocessable entity', async () => {
-  const petResponse: PetResponse = {
-    id: '4d783b77-eb09-4603-b99b-f590b605eaa9',
-    createdAt: '2005-08-15T15:52:01+00:00',
-    updatedAt: '2005-08-15T15:55:01+00:00',
-    name: 'Brownie',
-    tag: '0001-000',
-    vaccinations: [{ name: 'Rabies' }],
-    _links: {},
-  };
-
-  mockReadPetClient = async (id: string) => {
-    expect(id).toBe('4d783b77-eb09-4603-b99b-f590b605eaa9');
-
-    return new Promise<PetResponse>((resolve) => resolve(petResponse));
-  };
-
-  mockUpdatePetClient = async (id: string) => {
-    expect(id).toBe('4d783b77-eb09-4603-b99b-f590b605eaa9');
-
-    return new Promise<UnprocessableEntity>((resolve) =>
-      resolve(new UnprocessableEntity({ title: 'unprocessable entity' })),
-    );
-  };
-
-  const router = createRouter({
-    history: createWebHistory(),
-    routes: [
-      { path: '/', name: 'Home', component: defineComponent(() => () => <div data-testid="page-home-mock" />) },
-      {
-        path: '/pet',
-        name: 'PetList',
-        component: defineComponent(() => () => <div data-testid="page-pet-list-mock" />),
-      },
-      {
-        path: '/pet/:id/update',
-        name: 'PetUpdate',
-        component: () => import('../../../../src/component/page/pet/update'),
-      },
-    ],
   });
 
-  const { container } = render(<RouterView />, {
-    global: {
-      plugins: [router],
-    },
-  });
+  test('unprocessable entity', async () => {
+    const petResponse: PetResponse = {
+      id: '4d783b77-eb09-4603-b99b-f590b605eaa9',
+      createdAt: '2005-08-15T15:52:01+00:00',
+      updatedAt: '2005-08-15T15:55:01+00:00',
+      name: 'Brownie',
+      tag: '0001-000',
+      vaccinations: [{ name: 'Rabies' }],
+      _links: {},
+    };
 
-  await router.push('/pet/4d783b77-eb09-4603-b99b-f590b605eaa9/update');
+    mockReadPetClient = async (id: string) => {
+      expect(id).toBe('4d783b77-eb09-4603-b99b-f590b605eaa9');
 
-  const testButton = await screen.findByTestId('pet-form-submit');
+      return new Promise<PetResponse>((resolve) => resolve(petResponse));
+    };
 
-  await userEvent.click(testButton);
+    mockUpdatePetClient = async (id: string) => {
+      expect(id).toBe('4d783b77-eb09-4603-b99b-f590b605eaa9');
 
-  await screen.findByTestId('http-error');
+      return new Promise<UnprocessableEntity>((resolve) =>
+        resolve(new UnprocessableEntity({ title: 'unprocessable entity' })),
+      );
+    };
 
-  expect(formatHtml(container.outerHTML)).toMatchInlineSnapshot(`
+    const router = createRouter({
+      history: createWebHistory(),
+      routes: [
+        { path: '/', name: 'Home', component: defineComponent(() => () => <div data-testid="page-home-mock" />) },
+        {
+          path: '/pet',
+          name: 'PetList',
+          component: defineComponent(() => () => <div data-testid="page-pet-list-mock" />),
+        },
+        {
+          path: '/pet/:id/update',
+          name: 'PetUpdate',
+          component: () => import('../../../../src/component/page/pet/update'),
+        },
+      ],
+    });
+
+    const { container } = render(<RouterView />, {
+      global: {
+        plugins: [router],
+      },
+    });
+
+    await router.push('/pet/4d783b77-eb09-4603-b99b-f590b605eaa9/update');
+
+    const testButton = await screen.findByTestId('pet-form-submit');
+
+    await userEvent.click(testButton);
+
+    await screen.findByTestId('http-error');
+
+    expect(formatHtml(container.outerHTML)).toMatchInlineSnapshot(`
     "<div>
       <div data-testid="page-pet-update">
         <div data-testid="http-error" class="mb-6 bg-red-300 px-5 py-4">
@@ -257,70 +258,71 @@ test('unprocessable entity', async () => {
     </div>
     "
   `);
-});
-
-test('successful', async () => {
-  const petRequest: PetRequest = {
-    name: 'Brownie',
-    tag: '0001-000',
-    vaccinations: [{ name: 'Rabies' }],
-  };
-
-  const petResponse: PetResponse = {
-    id: '4d783b77-eb09-4603-b99b-f590b605eaa9',
-    createdAt: '2005-08-15T15:52:01+00:00',
-    updatedAt: '2005-08-15T15:55:01+00:00',
-    ...petRequest,
-    _links: {},
-  };
-
-  mockReadPetClient = async (id: string) => {
-    expect(id).toBe('4d783b77-eb09-4603-b99b-f590b605eaa9');
-
-    return new Promise<PetResponse>((resolve) => resolve(petResponse));
-  };
-
-  mockUpdatePetClient = async (id: string, petRequest: PetRequest) => {
-    expect(id).toBe('4d783b77-eb09-4603-b99b-f590b605eaa9');
-
-    expect(petRequest).toEqual(petRequest);
-
-    return new Promise<PetResponse>((resolve) => resolve(petResponse));
-  };
-
-  const router = createRouter({
-    history: createWebHistory(),
-    routes: [
-      { path: '/', name: 'Home', component: defineComponent(() => () => <div data-testid="page-home-mock" />) },
-      {
-        path: '/pet',
-        name: 'PetList',
-        component: defineComponent(() => () => <div data-testid="page-pet-list-mock" />),
-      },
-      {
-        path: '/pet/:id/update',
-        name: 'PetUpdate',
-        component: () => import('../../../../src/component/page/pet/update'),
-      },
-    ],
   });
 
-  const { container } = render(<RouterView />, {
-    global: {
-      plugins: [router],
-    },
-  });
+  test('successful', async () => {
+    const petRequest: PetRequest = {
+      name: 'Brownie',
+      tag: '0001-000',
+      vaccinations: [{ name: 'Rabies' }],
+    };
 
-  await router.push('/pet/4d783b77-eb09-4603-b99b-f590b605eaa9/update');
+    const petResponse: PetResponse = {
+      id: '4d783b77-eb09-4603-b99b-f590b605eaa9',
+      createdAt: '2005-08-15T15:52:01+00:00',
+      updatedAt: '2005-08-15T15:55:01+00:00',
+      ...petRequest,
+      _links: {},
+    };
 
-  const testButton = await screen.findByTestId('pet-form-submit');
+    mockReadPetClient = async (id: string) => {
+      expect(id).toBe('4d783b77-eb09-4603-b99b-f590b605eaa9');
 
-  await userEvent.click(testButton);
+      return new Promise<PetResponse>((resolve) => resolve(petResponse));
+    };
 
-  await screen.findByTestId('page-pet-list-mock');
+    mockUpdatePetClient = async (id: string, petRequest: PetRequest) => {
+      expect(id).toBe('4d783b77-eb09-4603-b99b-f590b605eaa9');
 
-  expect(formatHtml(container.outerHTML)).toMatchInlineSnapshot(`
+      expect(petRequest).toEqual(petRequest);
+
+      return new Promise<PetResponse>((resolve) => resolve(petResponse));
+    };
+
+    const router = createRouter({
+      history: createWebHistory(),
+      routes: [
+        { path: '/', name: 'Home', component: defineComponent(() => () => <div data-testid="page-home-mock" />) },
+        {
+          path: '/pet',
+          name: 'PetList',
+          component: defineComponent(() => () => <div data-testid="page-pet-list-mock" />),
+        },
+        {
+          path: '/pet/:id/update',
+          name: 'PetUpdate',
+          component: () => import('../../../../src/component/page/pet/update'),
+        },
+      ],
+    });
+
+    const { container } = render(<RouterView />, {
+      global: {
+        plugins: [router],
+      },
+    });
+
+    await router.push('/pet/4d783b77-eb09-4603-b99b-f590b605eaa9/update');
+
+    const testButton = await screen.findByTestId('pet-form-submit');
+
+    await userEvent.click(testButton);
+
+    await screen.findByTestId('page-pet-list-mock');
+
+    expect(formatHtml(container.outerHTML)).toMatchInlineSnapshot(`
     "<div><div data-testid="page-pet-list-mock"></div></div>
     "
   `);
+  });
 });

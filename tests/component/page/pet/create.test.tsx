@@ -1,6 +1,6 @@
 /** @jsxImportSource vue */
 
-import { vi, test, expect } from 'vitest';
+import { vi, test, expect, describe } from 'vitest';
 import { render, screen } from '@testing-library/vue';
 import { defineComponent } from 'vue';
 import { createRouter, createWebHistory, RouterView } from 'vue-router';
@@ -46,31 +46,36 @@ vi.mock('../../../../src/component/form/pet-form', () => {
   };
 });
 
-test('default', async () => {
-  const router = createRouter({
-    history: createWebHistory(),
-    routes: [
-      { path: '/', name: 'Home', component: defineComponent(() => () => <div data-testid="page-home-mock" />) },
-      {
-        path: '/pet',
-        name: 'PetList',
-        component: defineComponent(() => () => <div data-testid="page-pet-list-mock" />),
+describe('create', () => {
+  test('default', async () => {
+    const router = createRouter({
+      history: createWebHistory(),
+      routes: [
+        { path: '/', name: 'Home', component: defineComponent(() => () => <div data-testid="page-home-mock" />) },
+        {
+          path: '/pet',
+          name: 'PetList',
+          component: defineComponent(() => () => <div data-testid="page-pet-list-mock" />),
+        },
+        {
+          path: '/pet/create',
+          name: 'PetCreate',
+          component: () => import('../../../../src/component/page/pet/create'),
+        },
+      ],
+    });
+
+    const { container } = render(<RouterView />, {
+      global: {
+        plugins: [router],
       },
-      { path: '/pet/create', name: 'PetCreate', component: () => import('../../../../src/component/page/pet/create') },
-    ],
-  });
+    });
 
-  const { container } = render(<RouterView />, {
-    global: {
-      plugins: [router],
-    },
-  });
+    await router.push('/pet/create');
 
-  await router.push('/pet/create');
+    await screen.findByTestId('page-pet-create');
 
-  await screen.findByTestId('page-pet-create');
-
-  expect(formatHtml(container.outerHTML)).toMatchInlineSnapshot(`
+    expect(formatHtml(container.outerHTML)).toMatchInlineSnapshot(`
     "<div>
       <div data-testid="page-pet-create">
         <!---->
@@ -92,43 +97,47 @@ test('default', async () => {
     </div>
     "
   `);
-});
+  });
 
-test('unprocessable entity', async () => {
-  mockCreatePetClient = async (_: PetRequest) => {
-    return new Promise<UnprocessableEntity>((resolve) =>
-      resolve(new UnprocessableEntity({ title: 'unprocessable entity' })),
-    );
-  };
+  test('unprocessable entity', async () => {
+    mockCreatePetClient = async (_: PetRequest) => {
+      return new Promise<UnprocessableEntity>((resolve) =>
+        resolve(new UnprocessableEntity({ title: 'unprocessable entity' })),
+      );
+    };
 
-  const router = createRouter({
-    history: createWebHistory(),
-    routes: [
-      { path: '/', name: 'Home', component: defineComponent(() => () => <div data-testid="page-home-mock" />) },
-      {
-        path: '/pet',
-        name: 'PetList',
-        component: defineComponent(() => () => <div data-testid="page-pet-list-mock" />),
+    const router = createRouter({
+      history: createWebHistory(),
+      routes: [
+        { path: '/', name: 'Home', component: defineComponent(() => () => <div data-testid="page-home-mock" />) },
+        {
+          path: '/pet',
+          name: 'PetList',
+          component: defineComponent(() => () => <div data-testid="page-pet-list-mock" />),
+        },
+        {
+          path: '/pet/create',
+          name: 'PetCreate',
+          component: () => import('../../../../src/component/page/pet/create'),
+        },
+      ],
+    });
+
+    const { container } = render(<RouterView />, {
+      global: {
+        plugins: [router],
       },
-      { path: '/pet/create', name: 'PetCreate', component: () => import('../../../../src/component/page/pet/create') },
-    ],
-  });
+    });
 
-  const { container } = render(<RouterView />, {
-    global: {
-      plugins: [router],
-    },
-  });
+    await router.push('/pet/create');
 
-  await router.push('/pet/create');
+    const testButton = await screen.findByTestId('pet-form-submit');
 
-  const testButton = await screen.findByTestId('pet-form-submit');
+    await userEvent.click(testButton);
 
-  await userEvent.click(testButton);
+    await screen.findByTestId('http-error');
 
-  await screen.findByTestId('http-error');
-
-  expect(formatHtml(container.outerHTML)).toMatchInlineSnapshot(`
+    expect(formatHtml(container.outerHTML)).toMatchInlineSnapshot(`
     "<div>
       <div data-testid="page-pet-create">
         <div data-testid="http-error" class="mb-6 bg-red-300 px-5 py-4">
@@ -153,48 +162,53 @@ test('unprocessable entity', async () => {
     </div>
     "
   `);
-});
+  });
 
-test('successful', async () => {
-  mockCreatePetClient = async (petRequest: PetRequest) => {
-    const petResponse: PetResponse = {
-      id: '4d783b77-eb09-4603-b99b-f590b605eaa9',
-      createdAt: '2005-08-15T15:52:01+00:00',
-      ...petRequest,
-      _links: {},
+  test('successful', async () => {
+    mockCreatePetClient = async (petRequest: PetRequest) => {
+      const petResponse: PetResponse = {
+        id: '4d783b77-eb09-4603-b99b-f590b605eaa9',
+        createdAt: '2005-08-15T15:52:01+00:00',
+        ...petRequest,
+        _links: {},
+      };
+      return new Promise<PetResponse>((resolve) => resolve(petResponse));
     };
-    return new Promise<PetResponse>((resolve) => resolve(petResponse));
-  };
 
-  const router = createRouter({
-    history: createWebHistory(),
-    routes: [
-      { path: '/', name: 'Home', component: defineComponent(() => () => <div data-testid="page-home-mock" />) },
-      {
-        path: '/pet',
-        name: 'PetList',
-        component: defineComponent(() => () => <div data-testid="page-pet-list-mock" />),
+    const router = createRouter({
+      history: createWebHistory(),
+      routes: [
+        { path: '/', name: 'Home', component: defineComponent(() => () => <div data-testid="page-home-mock" />) },
+        {
+          path: '/pet',
+          name: 'PetList',
+          component: defineComponent(() => () => <div data-testid="page-pet-list-mock" />),
+        },
+        {
+          path: '/pet/create',
+          name: 'PetCreate',
+          component: () => import('../../../../src/component/page/pet/create'),
+        },
+      ],
+    });
+
+    const { container } = render(<RouterView />, {
+      global: {
+        plugins: [router],
       },
-      { path: '/pet/create', name: 'PetCreate', component: () => import('../../../../src/component/page/pet/create') },
-    ],
-  });
+    });
 
-  const { container } = render(<RouterView />, {
-    global: {
-      plugins: [router],
-    },
-  });
+    await router.push('/pet/create');
 
-  await router.push('/pet/create');
+    const testButton = await screen.findByTestId('pet-form-submit');
 
-  const testButton = await screen.findByTestId('pet-form-submit');
+    await userEvent.click(testButton);
 
-  await userEvent.click(testButton);
+    await screen.findByTestId('page-pet-list-mock');
 
-  await screen.findByTestId('page-pet-list-mock');
-
-  expect(formatHtml(container.outerHTML)).toMatchInlineSnapshot(`
+    expect(formatHtml(container.outerHTML)).toMatchInlineSnapshot(`
     "<div><div data-testid="page-pet-list-mock"></div></div>
     "
   `);
+  });
 });

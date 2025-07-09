@@ -1,6 +1,6 @@
 /** @jsxImportSource vue */
 
-import { test, expect, vi } from 'vitest';
+import { test, expect, vi, describe } from 'vitest';
 import { render, screen } from '@testing-library/vue';
 import { userEvent } from '@testing-library/user-event';
 import { createRouter, createWebHistory } from 'vue-router';
@@ -51,19 +51,20 @@ vi.mock('../src/component/page/not-found', () => {
   };
 });
 
-test('close navigation', () => {
-  const router = createRouter({
-    history: createWebHistory(),
-    routes,
-  });
+describe('app', () => {
+  test('close navigation', () => {
+    const router = createRouter({
+      history: createWebHistory(),
+      routes,
+    });
 
-  const { container } = render(<App />, {
-    global: {
-      plugins: [router],
-    },
-  });
+    const { container } = render(<App />, {
+      global: {
+        plugins: [router],
+      },
+    });
 
-  expect(formatHtml(container.outerHTML)).toMatchInlineSnapshot(`
+    expect(formatHtml(container.outerHTML)).toMatchInlineSnapshot(`
     "<div>
       <div class="relative flex min-h-full flex-col md:flex-row">
         <nav
@@ -97,25 +98,25 @@ test('close navigation', () => {
     </div>
     "
   `);
-});
-
-test('open navigation', async () => {
-  const router = createRouter({
-    history: createWebHistory(),
-    routes,
   });
 
-  const { container } = render(<App />, {
-    global: {
-      plugins: [router],
-    },
-  });
+  test('open navigation', async () => {
+    const router = createRouter({
+      history: createWebHistory(),
+      routes,
+    });
 
-  const navigationToggle = await screen.findByTestId('navigation-toggle');
+    const { container } = render(<App />, {
+      global: {
+        plugins: [router],
+      },
+    });
 
-  await userEvent.click(navigationToggle);
+    const navigationToggle = await screen.findByTestId('navigation-toggle');
 
-  expect(formatHtml(container.outerHTML)).toMatchInlineSnapshot(`
+    await userEvent.click(navigationToggle);
+
+    expect(formatHtml(container.outerHTML)).toMatchInlineSnapshot(`
     "<div>
       <div class="relative flex min-h-full flex-col md:flex-row">
         <nav
@@ -156,23 +157,23 @@ test('open navigation', async () => {
     </div>
     "
   `);
-});
-
-test('not found', async () => {
-  const router = createRouter({
-    history: createWebHistory(),
-    routes,
   });
 
-  const { container } = render(<App />, {
-    global: {
-      plugins: [router],
-    },
-  });
+  test('not found', async () => {
+    const router = createRouter({
+      history: createWebHistory(),
+      routes,
+    });
 
-  await router.push('/unknown');
+    const { container } = render(<App />, {
+      global: {
+        plugins: [router],
+      },
+    });
 
-  expect(formatHtml(container.outerHTML)).toMatchInlineSnapshot(`
+    await router.push('/unknown');
+
+    expect(formatHtml(container.outerHTML)).toMatchInlineSnapshot(`
     "<div>
       <div class="relative flex min-h-full flex-col md:flex-row">
         <nav
@@ -208,23 +209,23 @@ test('not found', async () => {
     </div>
     "
   `);
-});
-
-test('pet list', async () => {
-  const router = createRouter({
-    history: createWebHistory(),
-    routes,
   });
 
-  const { container } = render(<App />, {
-    global: {
-      plugins: [router],
-    },
-  });
+  test('pet list', async () => {
+    const router = createRouter({
+      history: createWebHistory(),
+      routes,
+    });
 
-  await router.push('/pet');
+    const { container } = render(<App />, {
+      global: {
+        plugins: [router],
+      },
+    });
 
-  expect(formatHtml(container.outerHTML)).toMatchInlineSnapshot(`
+    await router.push('/pet');
+
+    expect(formatHtml(container.outerHTML)).toMatchInlineSnapshot(`
     "<div>
       <div class="relative flex min-h-full flex-col md:flex-row">
         <nav
@@ -263,23 +264,23 @@ test('pet list', async () => {
     </div>
     "
   `);
-});
-
-test('pet create', async () => {
-  const router = createRouter({
-    history: createWebHistory(),
-    routes,
   });
 
-  const { container } = render(<App />, {
-    global: {
-      plugins: [router],
-    },
-  });
+  test('pet create', async () => {
+    const router = createRouter({
+      history: createWebHistory(),
+      routes,
+    });
 
-  await router.push('/pet/create');
+    const { container } = render(<App />, {
+      global: {
+        plugins: [router],
+      },
+    });
 
-  expect(formatHtml(container.outerHTML)).toMatchInlineSnapshot(`
+    await router.push('/pet/create');
+
+    expect(formatHtml(container.outerHTML)).toMatchInlineSnapshot(`
     "<div>
       <div class="relative flex min-h-full flex-col md:flex-row">
         <nav
@@ -315,23 +316,23 @@ test('pet create', async () => {
     </div>
     "
   `);
-});
-
-test('pet read', async () => {
-  const router = createRouter({
-    history: createWebHistory(),
-    routes,
   });
 
-  const { container } = render(<App />, {
-    global: {
-      plugins: [router],
-    },
-  });
+  test('pet read', async () => {
+    const router = createRouter({
+      history: createWebHistory(),
+      routes,
+    });
 
-  await router.push('/pet/4d783b77-eb09-4603-b99b-f590b605eaa9');
+    const { container } = render(<App />, {
+      global: {
+        plugins: [router],
+      },
+    });
 
-  expect(formatHtml(container.outerHTML)).toMatchInlineSnapshot(`
+    await router.push('/pet/4d783b77-eb09-4603-b99b-f590b605eaa9');
+
+    expect(formatHtml(container.outerHTML)).toMatchInlineSnapshot(`
     "<div>
       <div class="relative flex min-h-full flex-col md:flex-row">
         <nav
@@ -367,23 +368,23 @@ test('pet read', async () => {
     </div>
     "
   `);
-});
-
-test('pet update', async () => {
-  const router = createRouter({
-    history: createWebHistory(),
-    routes,
   });
 
-  const { container } = render(<App />, {
-    global: {
-      plugins: [router],
-    },
-  });
+  test('pet update', async () => {
+    const router = createRouter({
+      history: createWebHistory(),
+      routes,
+    });
 
-  await router.push('/pet/4d783b77-eb09-4603-b99b-f590b605eaa9/update');
+    const { container } = render(<App />, {
+      global: {
+        plugins: [router],
+      },
+    });
 
-  expect(formatHtml(container.outerHTML)).toMatchInlineSnapshot(`
+    await router.push('/pet/4d783b77-eb09-4603-b99b-f590b605eaa9/update');
+
+    expect(formatHtml(container.outerHTML)).toMatchInlineSnapshot(`
     "<div>
       <div class="relative flex min-h-full flex-col md:flex-row">
         <nav
@@ -419,4 +420,5 @@ test('pet update', async () => {
     </div>
     "
   `);
+  });
 });

@@ -1,6 +1,6 @@
 /** @jsxImportSource vue */
 
-import { vi, test, expect } from 'vitest';
+import { vi, test, expect, describe } from 'vitest';
 import { render, screen } from '@testing-library/vue';
 import { createRouter, createWebHistory, RouterView } from 'vue-router';
 import { defineComponent } from 'vue';
@@ -21,37 +21,38 @@ vi.mock('../../../../src/client/pet', () => {
   };
 });
 
-test('not found', async () => {
-  mockReadPetClient = async (id: string) => {
-    expect(id).toBe('4d783b77-eb09-4603-b99b-f590b605eaa9');
+describe('read', () => {
+  test('not found', async () => {
+    mockReadPetClient = async (id: string) => {
+      expect(id).toBe('4d783b77-eb09-4603-b99b-f590b605eaa9');
 
-    return new Promise<NotFound>((resolve) => resolve(new NotFound({ title: 'title' })));
-  };
+      return new Promise<NotFound>((resolve) => resolve(new NotFound({ title: 'title' })));
+    };
 
-  const router = createRouter({
-    history: createWebHistory(),
-    routes: [
-      { path: '/', name: 'Home', component: defineComponent(() => () => <div data-testid="page-home-mock" />) },
-      {
-        path: '/pet',
-        name: 'PetList',
-        component: defineComponent(() => () => <div data-testid="page-pet-list-mock" />),
+    const router = createRouter({
+      history: createWebHistory(),
+      routes: [
+        { path: '/', name: 'Home', component: defineComponent(() => () => <div data-testid="page-home-mock" />) },
+        {
+          path: '/pet',
+          name: 'PetList',
+          component: defineComponent(() => () => <div data-testid="page-pet-list-mock" />),
+        },
+        { path: '/pet/:id', name: 'PetRead', component: () => import('../../../../src/component/page/pet/read') },
+      ],
+    });
+
+    const { container } = render(<RouterView />, {
+      global: {
+        plugins: [router],
       },
-      { path: '/pet/:id', name: 'PetRead', component: () => import('../../../../src/component/page/pet/read') },
-    ],
-  });
+    });
 
-  const { container } = render(<RouterView />, {
-    global: {
-      plugins: [router],
-    },
-  });
+    await router.push('/pet/4d783b77-eb09-4603-b99b-f590b605eaa9');
 
-  await router.push('/pet/4d783b77-eb09-4603-b99b-f590b605eaa9');
+    await screen.findByTestId('page-pet-read');
 
-  await screen.findByTestId('page-pet-read');
-
-  expect(formatHtml(container.outerHTML)).toMatchInlineSnapshot(`
+    expect(formatHtml(container.outerHTML)).toMatchInlineSnapshot(`
     "<div>
       <div data-testid="page-pet-read">
         <div data-testid="http-error" class="mb-6 bg-red-300 px-5 py-4">
@@ -71,49 +72,49 @@ test('not found', async () => {
     </div>
     "
   `);
-});
+  });
 
-test('success without vaccinations', async () => {
-  const petResponse: PetResponse = {
-    id: '4d783b77-eb09-4603-b99b-f590b605eaa9',
-    createdAt: '2005-08-15T15:52:01+00:00',
-    updatedAt: '2005-08-15T15:55:01+00:00',
-    name: 'Brownie',
-    tag: '0001-000',
-    vaccinations: [],
-    _links: {},
-  };
+  test('success without vaccinations', async () => {
+    const petResponse: PetResponse = {
+      id: '4d783b77-eb09-4603-b99b-f590b605eaa9',
+      createdAt: '2005-08-15T15:52:01+00:00',
+      updatedAt: '2005-08-15T15:55:01+00:00',
+      name: 'Brownie',
+      tag: '0001-000',
+      vaccinations: [],
+      _links: {},
+    };
 
-  mockReadPetClient = async (id: string) => {
-    expect(id).toBe('4d783b77-eb09-4603-b99b-f590b605eaa9');
+    mockReadPetClient = async (id: string) => {
+      expect(id).toBe('4d783b77-eb09-4603-b99b-f590b605eaa9');
 
-    return new Promise<PetResponse>((resolve) => resolve(petResponse));
-  };
+      return new Promise<PetResponse>((resolve) => resolve(petResponse));
+    };
 
-  const router = createRouter({
-    history: createWebHistory(),
-    routes: [
-      { path: '/', name: 'Home', component: defineComponent(() => () => <div data-testid="page-home-mock" />) },
-      {
-        path: '/pet',
-        name: 'PetList',
-        component: defineComponent(() => () => <div data-testid="page-pet-list-mock" />),
+    const router = createRouter({
+      history: createWebHistory(),
+      routes: [
+        { path: '/', name: 'Home', component: defineComponent(() => () => <div data-testid="page-home-mock" />) },
+        {
+          path: '/pet',
+          name: 'PetList',
+          component: defineComponent(() => () => <div data-testid="page-pet-list-mock" />),
+        },
+        { path: '/pet/:id', name: 'PetRead', component: () => import('../../../../src/component/page/pet/read') },
+      ],
+    });
+
+    const { container } = render(<RouterView />, {
+      global: {
+        plugins: [router],
       },
-      { path: '/pet/:id', name: 'PetRead', component: () => import('../../../../src/component/page/pet/read') },
-    ],
-  });
+    });
 
-  const { container } = render(<RouterView />, {
-    global: {
-      plugins: [router],
-    },
-  });
+    await router.push('/pet/4d783b77-eb09-4603-b99b-f590b605eaa9');
 
-  await router.push('/pet/4d783b77-eb09-4603-b99b-f590b605eaa9');
+    await screen.findByTestId('page-pet-read');
 
-  await screen.findByTestId('page-pet-read');
-
-  expect(formatHtml(container.outerHTML)).toMatchInlineSnapshot(`
+    expect(formatHtml(container.outerHTML)).toMatchInlineSnapshot(`
     "<div>
       <div data-testid="page-pet-read">
         <!---->
@@ -146,49 +147,49 @@ test('success without vaccinations', async () => {
     </div>
     "
   `);
-});
+  });
 
-test('success with vaccinations', async () => {
-  const petResponse: PetResponse = {
-    id: '4d783b77-eb09-4603-b99b-f590b605eaa9',
-    createdAt: '2005-08-15T15:52:01+00:00',
-    updatedAt: '2005-08-15T15:55:01+00:00',
-    name: 'Brownie',
-    tag: '0001-000',
-    vaccinations: [{ name: 'Rabies' }],
-    _links: {},
-  };
+  test('success with vaccinations', async () => {
+    const petResponse: PetResponse = {
+      id: '4d783b77-eb09-4603-b99b-f590b605eaa9',
+      createdAt: '2005-08-15T15:52:01+00:00',
+      updatedAt: '2005-08-15T15:55:01+00:00',
+      name: 'Brownie',
+      tag: '0001-000',
+      vaccinations: [{ name: 'Rabies' }],
+      _links: {},
+    };
 
-  mockReadPetClient = async (id: string) => {
-    expect(id).toBe('4d783b77-eb09-4603-b99b-f590b605eaa9');
+    mockReadPetClient = async (id: string) => {
+      expect(id).toBe('4d783b77-eb09-4603-b99b-f590b605eaa9');
 
-    return new Promise<PetResponse>((resolve) => resolve(petResponse));
-  };
+      return new Promise<PetResponse>((resolve) => resolve(petResponse));
+    };
 
-  const router = createRouter({
-    history: createWebHistory(),
-    routes: [
-      { path: '/', name: 'Home', component: defineComponent(() => () => <div data-testid="page-home-mock" />) },
-      {
-        path: '/pet',
-        name: 'PetList',
-        component: defineComponent(() => () => <div data-testid="page-pet-list-mock" />),
+    const router = createRouter({
+      history: createWebHistory(),
+      routes: [
+        { path: '/', name: 'Home', component: defineComponent(() => () => <div data-testid="page-home-mock" />) },
+        {
+          path: '/pet',
+          name: 'PetList',
+          component: defineComponent(() => () => <div data-testid="page-pet-list-mock" />),
+        },
+        { path: '/pet/:id', name: 'PetRead', component: () => import('../../../../src/component/page/pet/read') },
+      ],
+    });
+
+    const { container } = render(<RouterView />, {
+      global: {
+        plugins: [router],
       },
-      { path: '/pet/:id', name: 'PetRead', component: () => import('../../../../src/component/page/pet/read') },
-    ],
-  });
+    });
 
-  const { container } = render(<RouterView />, {
-    global: {
-      plugins: [router],
-    },
-  });
+    await router.push('/pet/4d783b77-eb09-4603-b99b-f590b605eaa9');
 
-  await router.push('/pet/4d783b77-eb09-4603-b99b-f590b605eaa9');
+    await screen.findByTestId('page-pet-read');
 
-  await screen.findByTestId('page-pet-read');
-
-  expect(formatHtml(container.outerHTML)).toMatchInlineSnapshot(`
+    expect(formatHtml(container.outerHTML)).toMatchInlineSnapshot(`
     "<div>
       <div data-testid="page-pet-read">
         <!---->
@@ -225,4 +226,5 @@ test('success with vaccinations', async () => {
     </div>
     "
   `);
+  });
 });

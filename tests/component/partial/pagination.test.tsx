@@ -2,38 +2,39 @@
 
 import { render, screen } from '@testing-library/vue';
 import { userEvent } from '@testing-library/user-event';
-import { test, expect } from 'vitest';
+import { test, expect, describe } from 'vitest';
 import { formatHtml } from '../../formatter';
 import { Pagination } from '../../../src/component/partial/pagination';
 
-test('max pages 1', () => {
-  const submitPage = (): void => {};
+describe('pagination', () => {
+  test('max pages 1', () => {
+    const submitPage = (): void => {};
 
-  const { container } = render(<Pagination currentPage={1} maxPages={1} totalPages={10} submitPage={submitPage} />);
+    const { container } = render(<Pagination currentPage={1} maxPages={1} totalPages={10} submitPage={submitPage} />);
 
-  expect(formatHtml(container.outerHTML)).toMatchInlineSnapshot(`
+    expect(formatHtml(container.outerHTML)).toMatchInlineSnapshot(`
     "<div><!----></div>
     "
   `);
-});
+  });
 
-test('total pages 1', () => {
-  const submitPage = (): void => {};
+  test('total pages 1', () => {
+    const submitPage = (): void => {};
 
-  const { container } = render(<Pagination currentPage={1} maxPages={7} totalPages={1} submitPage={submitPage} />);
+    const { container } = render(<Pagination currentPage={1} maxPages={7} totalPages={1} submitPage={submitPage} />);
 
-  expect(formatHtml(container.outerHTML)).toMatchInlineSnapshot(`
+    expect(formatHtml(container.outerHTML)).toMatchInlineSnapshot(`
     "<div><!----></div>
     "
   `);
-});
+  });
 
-test('current 1', () => {
-  const submitPage = (): void => {};
+  test('current 1', () => {
+    const submitPage = (): void => {};
 
-  const { container } = render(<Pagination currentPage={1} maxPages={7} totalPages={10} submitPage={submitPage} />);
+    const { container } = render(<Pagination currentPage={1} maxPages={7} totalPages={10} submitPage={submitPage} />);
 
-  expect(formatHtml(container.outerHTML)).toMatchInlineSnapshot(`
+    expect(formatHtml(container.outerHTML)).toMatchInlineSnapshot(`
     "<div>
       <ul class="w-fit border-y border-l border-gray-300">
         <!----><!---->
@@ -68,14 +69,14 @@ test('current 1', () => {
     </div>
     "
   `);
-});
+  });
 
-test('current 4', () => {
-  const submitPage = (): void => {};
+  test('current 4', () => {
+    const submitPage = (): void => {};
 
-  const { container } = render(<Pagination currentPage={4} maxPages={7} totalPages={10} submitPage={submitPage} />);
+    const { container } = render(<Pagination currentPage={4} maxPages={7} totalPages={10} submitPage={submitPage} />);
 
-  expect(formatHtml(container.outerHTML)).toMatchInlineSnapshot(`
+    expect(formatHtml(container.outerHTML)).toMatchInlineSnapshot(`
     "<div>
       <ul class="w-fit border-y border-l border-gray-300">
         <li class="inline-block">
@@ -115,14 +116,14 @@ test('current 4', () => {
     </div>
     "
   `);
-});
+  });
 
-test('current 7', () => {
-  const submitPage = (): void => {};
+  test('current 7', () => {
+    const submitPage = (): void => {};
 
-  const { container } = render(<Pagination currentPage={7} maxPages={7} totalPages={10} submitPage={submitPage} />);
+    const { container } = render(<Pagination currentPage={7} maxPages={7} totalPages={10} submitPage={submitPage} />);
 
-  expect(formatHtml(container.outerHTML)).toMatchInlineSnapshot(`
+    expect(formatHtml(container.outerHTML)).toMatchInlineSnapshot(`
     "<div>
       <ul class="w-fit border-y border-l border-gray-300">
         <li class="inline-block">
@@ -162,14 +163,14 @@ test('current 7', () => {
     </div>
     "
   `);
-});
+  });
 
-test('current 10', () => {
-  const submitPage = (): void => {};
+  test('current 10', () => {
+    const submitPage = (): void => {};
 
-  const { container } = render(<Pagination currentPage={10} maxPages={7} totalPages={10} submitPage={submitPage} />);
+    const { container } = render(<Pagination currentPage={10} maxPages={7} totalPages={10} submitPage={submitPage} />);
 
-  expect(formatHtml(container.outerHTML)).toMatchInlineSnapshot(`
+    expect(formatHtml(container.outerHTML)).toMatchInlineSnapshot(`
     "<div>
       <ul class="w-fit border-y border-l border-gray-300">
         <li class="inline-block">
@@ -204,21 +205,22 @@ test('current 10', () => {
     </div>
     "
   `);
-});
+  });
 
-test('buttons', async () => {
-  const pages: number[] = [];
+  test('buttons', async () => {
+    const pages: number[] = [];
 
-  const submitPage = (page: number): void => {
-    // eslint-disable-next-line functional/immutable-data
-    pages.push(page);
-  };
+    const submitPage = (page: number): void => {
+      // eslint-disable-next-line functional/immutable-data
+      pages.push(page);
+    };
 
-  render(<Pagination currentPage={7} maxPages={7} totalPages={10} submitPage={submitPage} />);
+    render(<Pagination currentPage={7} maxPages={7} totalPages={10} submitPage={submitPage} />);
 
-  for await (const element of screen.getAllByRole('button')) {
-    await userEvent.click(element);
-  }
+    for await (const element of screen.getAllByRole('button')) {
+      await userEvent.click(element);
+    }
 
-  expect(pages).toEqual([1, 6, 4, 5, 6, 7, 8, 9, 10, 8, 10]);
+    expect(pages).toEqual([1, 6, 4, 5, 6, 7, 8, 9, 10, 8, 10]);
+  });
 });
