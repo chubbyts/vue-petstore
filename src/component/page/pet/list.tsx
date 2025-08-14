@@ -1,20 +1,22 @@
-import { computed, defineComponent, onMounted, watch } from 'vue';
+import { computed, defineComponent, onMounted } from 'vue';
 import { format } from 'date-fns';
 import { de } from 'date-fns/locale';
 import { useRoute, useRouter } from 'vue-router';
 import { z } from 'zod';
 import qs from 'qs';
+import { useMutation, useQuery, useQueryClient } from '@tanstack/vue-query';
 import { H1 } from '../../heading';
 import { HttpError as HttpErrorPartial } from '../../partial/http-error';
-import { createModelResource } from '../../../hook/create-model-resource';
-import { deletePetClient as deleteClient, listPetsClient as listClient } from '../../../client/pet';
+import { deletePetClient, listPetsClient } from '../../../client/pet';
 import { numberSchema } from '../../../model/model';
-import type { PetFilters, PetSort } from '../../../model/pet';
+import type { PetFilters, PetListResponse, PetSort } from '../../../model/pet';
 import { petFiltersSchema, petSortSchema } from '../../../model/pet';
 import { AnchorButton, Button } from '../../button';
 import { Table, Tbody, Td, Th, Thead, Tr } from '../../table';
 import { Pagination } from '../../partial/pagination';
 import { PetFiltersForm } from '../../form/pet-filters-form';
+import type { HttpError } from '../../../client/error';
+import { provideDeleteMutationFn, provideListQueryFn } from '../../../hook/use-query';
 
 const pageTitle = 'Pet List';
 
@@ -32,14 +34,7 @@ const PetList = defineComponent(
     const route = useRoute();
     const query = computed(() => querySchema.parse(qs.parse(route.fullPath.substring(route.path.length + 1))));
 
-    const {
-      modelList: petList,
-      httpError,
-      actions,
-    } = createModelResource({
-      listClient,
-      deleteClient,
-    });
+    const queryClient = useQueryClient();
 
     const petListRequest = computed(() => ({
       offset: query.value.page * limit - limit,
@@ -48,14 +43,26 @@ const PetList = defineComponent(
       sort: query.value.sort,
     }));
 
-    const fetchPetList = async () => {
-      actions.listModel(petListRequest.value);
-    };
+    const queryKey = computed(() => ['pets', qs.stringify(petListRequest.value)]);
+
+    const queryFn = computed(() => provideListQueryFn(listPetsClient, petListRequest.value));
+
+    const petListQuery = useQuery<PetListResponse, HttpError>({
+      queryKey,
+      queryFn,
+      retry: false,
+    });
+
+    const petDeleteMutation = useMutation<unknown, HttpError, string>({
+      mutationFn: provideDeleteMutationFn(deletePetClient),
+      onSuccess: () => {
+        queryClient.invalidateQueries({ queryKey: queryKey.value });
+      },
+      retry: false,
+    });
 
     const deletePet = async (id: string) => {
-      if (await actions.deleteModel(id)) {
-        fetchPetList();
-      }
+      petDeleteMutation.mutate(id);
     };
 
     const submitPage = (page: number): void => {
@@ -73,30 +80,26 @@ const PetList = defineComponent(
     onMounted(() => {
       // eslint-disable-next-line functional/immutable-data
       document.title = pageTitle;
-
-      fetchPetList();
     });
 
-    watch(query, () => {
-      fetchPetList();
-    });
+    const error = computed(() => petDeleteMutation.error?.value ?? petListQuery.error?.value);
 
     return () => (
       <>
-        {petList.value || httpError.value ? (
+        {petListQuery.data.value || petListQuery.error.value ? (
           <div data-testid="page-pet-list">
-            {httpError.value ? <HttpErrorPartial httpError={httpError.value} /> : null}
+            {error.value ? <HttpErrorPartial httpError={error.value} /> : null}
             <H1>{pageTitle}</H1>
-            {petList.value ? (
+            {petListQuery.data.value ? (
               <div>
-                {petList.value._links?.create ? (
+                {petListQuery.data.value._links?.create ? (
                   <AnchorButton to="/pet/create" colorTheme="green" class="mb-4">
                     Create
                   </AnchorButton>
                 ) : null}
                 <PetFiltersForm
-                  httpError={httpError.value}
-                  initialPetFilters={query.value.filters}
+                  httpError={petListQuery.error.value ?? undefined}
+                  initialPetFilters={{ ...query.value.filters }}
                   submitPetFilters={submitPetFilters}
                 />
                 <div class="mt-4">
@@ -135,7 +138,7 @@ const PetList = defineComponent(
                       </Tr>
                     </Thead>
                     <Tbody>
-                      {petList.value.items.map((pet, i) => (
+                      {petListQuery.data.value.items.map((pet, i) => (
                         <Tr key={pet.id}>
                           <Td>{pet.id}</Td>
                           <Td>{format(Date.parse(pet.createdAt), 'dd.MM.yyyy - HH:mm:ss', { locale: de })}</Td>
@@ -176,7 +179,7 @@ const PetList = defineComponent(
                 <div class="mt-4">
                   <Pagination
                     currentPage={query.value.page}
-                    totalPages={Math.ceil(petList.value.count / petList.value.limit)}
+                    totalPages={Math.ceil(petListQuery.data.value.count / petListQuery.data.value.limit)}
                     maxPages={7}
                     submitPage={submitPage}
                   />

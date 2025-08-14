@@ -2,11 +2,14 @@ import { defineComponent, onMounted } from 'vue';
 import { format } from 'date-fns';
 import { de } from 'date-fns/locale';
 import { useRoute } from 'vue-router';
+import { useQuery } from '@tanstack/vue-query';
 import { HttpError as HttpErrorPartial } from '../../partial/http-error';
 import { H1 } from '../../heading';
-import { createModelResource } from '../../../hook/create-model-resource';
-import { readPetClient as readClient } from '../../../client/pet';
+import { readPetClient } from '../../../client/pet';
 import { AnchorButton } from '../../button';
+import type { PetResponse } from '../../../model/pet';
+import type { HttpError } from '../../../client/error';
+import { provideReadQueryFn } from '../../../hook/use-query';
 
 const pageTitle = 'Pet Read';
 
@@ -15,45 +18,47 @@ const PetRead = defineComponent(
     const route = useRoute();
     const id = route.params.id as string;
 
-    const { model: pet, httpError, actions } = createModelResource({ readClient });
+    const petQuery = useQuery<PetResponse, HttpError>({
+      queryKey: ['pets', id],
+      queryFn: provideReadQueryFn(readPetClient, id),
+      retry: false,
+    });
 
     onMounted(() => {
       // eslint-disable-next-line functional/immutable-data
       document.title = pageTitle;
-
-      actions.readModel(id);
     });
 
     return () => (
       <>
-        {pet.value || httpError.value ? (
+        {petQuery.data.value || petQuery.error.value ? (
           <div data-testid="page-pet-read">
-            {httpError.value ? <HttpErrorPartial httpError={httpError.value} /> : null}
+            {petQuery.error.value ? <HttpErrorPartial httpError={petQuery.error.value} /> : null}
             <H1>{pageTitle}</H1>
-            {pet.value ? (
+            {petQuery.data.value ? (
               <div>
                 <dl>
                   <dt class="font-bold">Id</dt>
-                  <dd class="mb-4">{pet.value.id}</dd>
+                  <dd class="mb-4">{petQuery.data.value.id}</dd>
                   <dt class="font-bold">CreatedAt</dt>
                   <dd class="mb-4">
-                    {format(Date.parse(pet.value.createdAt), 'dd.MM.yyyy - HH:mm:ss', { locale: de })}
+                    {format(Date.parse(petQuery.data.value.createdAt), 'dd.MM.yyyy - HH:mm:ss', { locale: de })}
                   </dd>
                   <dt class="font-bold">UpdatedAt</dt>
                   <dd class="mb-4">
-                    {pet.value.updatedAt
-                      ? format(Date.parse(pet.value.updatedAt), 'dd.MM.yyyy - HH:mm:ss', { locale: de })
+                    {petQuery.data.value.updatedAt
+                      ? format(Date.parse(petQuery.data.value.updatedAt), 'dd.MM.yyyy - HH:mm:ss', { locale: de })
                       : null}
                   </dd>
                   <dt class="font-bold">Name</dt>
-                  <dd class="mb-4">{pet.value.name}</dd>
+                  <dd class="mb-4">{petQuery.data.value.name}</dd>
                   <dt class="font-bold">Tag</dt>
-                  <dd class="mb-4">{pet.value.tag}</dd>
+                  <dd class="mb-4">{petQuery.data.value.tag}</dd>
                   <dt class="font-bold">Vaccinations</dt>
                   <dd class="mb-4">
-                    {pet.value.vaccinations.length > 0 ? (
+                    {petQuery.data.value.vaccinations.length > 0 ? (
                       <ul>
-                        {pet.value.vaccinations.map((vaccination) => (
+                        {petQuery.data.value.vaccinations.map((vaccination) => (
                           <li key={vaccination.name}>{vaccination.name}</li>
                         ))}
                       </ul>

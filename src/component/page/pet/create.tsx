@@ -1,12 +1,14 @@
 import { defineComponent, onMounted } from 'vue';
 import { useRouter } from 'vue-router';
+import { useMutation } from '@tanstack/vue-query';
 import { H1 } from '../../heading';
 import { HttpError as HttpErrorPartial } from '../../partial/http-error';
-import { createModelResource } from '../../../hook/create-model-resource';
-import { createPetClient as createClient } from '../../../client/pet';
-import type { PetRequest } from '../../../model/pet';
+import { createPetClient } from '../../../client/pet';
+import type { PetRequest, PetResponse } from '../../../model/pet';
 import { PetForm } from '../../form/pet-form';
 import { AnchorButton } from '../../button';
+import type { HttpError } from '../../../client/error';
+import { provideCreateMutationFn } from '../../../hook/use-query';
 
 const pageTitle = 'Pet Create';
 
@@ -14,12 +16,16 @@ const PetCreate = defineComponent(
   () => {
     const { push } = useRouter();
 
-    const { httpError, actions } = createModelResource({ createClient });
-
-    const submitPet = async (pet: PetRequest) => {
-      if (await actions.createModel(pet)) {
+    const petMutation = useMutation<PetResponse, HttpError, PetRequest>({
+      mutationFn: provideCreateMutationFn(createPetClient),
+      onSuccess: () => {
         push('/pet');
-      }
+      },
+      retry: false,
+    });
+
+    const submitPet = async (petRequest: PetRequest) => {
+      petMutation.mutate(petRequest);
     };
 
     onMounted(() => {
@@ -29,9 +35,9 @@ const PetCreate = defineComponent(
 
     return () => (
       <div data-testid="page-pet-create">
-        {httpError.value ? <HttpErrorPartial httpError={httpError.value} /> : null}
+        {petMutation.error.value ? <HttpErrorPartial httpError={petMutation.error.value} /> : null}
         <H1>{pageTitle}</H1>
-        <PetForm httpError={httpError.value} submitPet={submitPet} />
+        <PetForm httpError={petMutation.error.value ?? undefined} submitPet={submitPet} />
         <AnchorButton to="/pet" colorTheme="gray">
           List
         </AnchorButton>
