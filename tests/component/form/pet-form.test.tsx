@@ -237,6 +237,10 @@ describe('pet-form', () => {
 
     await userEvent.type(nameField, 'ie');
 
+    const tagField = await screen.findByTestId('pet-form-tag');
+
+    await userEvent.type(tagField, '0002-000');
+
     const vaccinationNameField = await screen.findByTestId('pet-form-vaccinations-0-name');
 
     await userEvent.type(vaccinationNameField, 's');
@@ -249,6 +253,8 @@ describe('pet-form', () => {
     const removeVaccination = await screen.findByTestId('pet-form-remove-vaccination-3');
 
     await userEvent.click(removeVaccination);
+
+    await userEvent.clear(tagField);
 
     const submitButton = await screen.findByTestId('pet-form-submit');
 

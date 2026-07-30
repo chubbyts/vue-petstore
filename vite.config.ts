@@ -2,7 +2,7 @@ import { defineConfig } from 'vitest/config';
 import vueJsx from '@vitejs/plugin-vue-jsx';
 
 export default defineConfig({
-  plugins: [vueJsx()],
+  plugins: [vueJsx({ enableObjectSlots: false })],
   test: {
     globals: true,
     environment: 'jsdom',

@@ -84,7 +84,6 @@ describe('read', () => {
     const petResponse: PetResponse = {
       id: '89b3777b-1c36-493c-829d-6fe235e6af2c',
       createdAt: '2005-08-15T15:52:01+00:00',
-      updatedAt: '2005-08-15T15:55:01+00:00',
       name: 'Brownie',
       tag: '0001-000',
       vaccinations: [],
@@ -145,7 +144,7 @@ describe('read', () => {
               <dt class="font-bold">CreatedAt</dt>
               <dd class="mb-4">15.08.2005 - 17:52:01</dd>
               <dt class="font-bold">UpdatedAt</dt>
-              <dd class="mb-4">15.08.2005 - 17:55:01</dd>
+              <dd class="mb-4"><!----></dd>
               <dt class="font-bold">Name</dt>
               <dd class="mb-4">Brownie</dd>
               <dt class="font-bold">Tag</dt>
