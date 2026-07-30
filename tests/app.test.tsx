@@ -171,6 +171,7 @@ describe('app', () => {
       },
     });
 
+    // oxlint-disable-next-line functional/immutable-data
     await router.push('/unknown');
 
     expect(formatHtml(container.outerHTML)).toMatchInlineSnapshot(`
@@ -223,6 +224,7 @@ describe('app', () => {
       },
     });
 
+    // oxlint-disable-next-line functional/immutable-data
     await router.push('/pet');
 
     expect(formatHtml(container.outerHTML)).toMatchInlineSnapshot(`
@@ -278,6 +280,7 @@ describe('app', () => {
       },
     });
 
+    // oxlint-disable-next-line functional/immutable-data
     await router.push('/pet/create');
 
     expect(formatHtml(container.outerHTML)).toMatchInlineSnapshot(`
@@ -330,6 +333,7 @@ describe('app', () => {
       },
     });
 
+    // oxlint-disable-next-line functional/immutable-data
     await router.push('/pet/4d783b77-eb09-4603-b99b-f590b605eaa9');
 
     expect(formatHtml(container.outerHTML)).toMatchInlineSnapshot(`
@@ -382,6 +386,7 @@ describe('app', () => {
       },
     });
 
+    // oxlint-disable-next-line functional/immutable-data
     await router.push('/pet/4d783b77-eb09-4603-b99b-f590b605eaa9/update');
 
     expect(formatHtml(container.outerHTML)).toMatchInlineSnapshot(`

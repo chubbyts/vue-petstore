@@ -32,7 +32,7 @@ export const PetFiltersForm = defineComponent(
             dataTestId="pet-filters-form-name"
             label="Name"
             value={petFilters.name ?? ''}
-            // eslint-disable-next-line functional/immutable-data
+            // oxlint-disable-next-line functional/immutable-data
             setValue={(value) => (petFilters.name = value === '' ? undefined : value)}
             invalidParameters={groupInvalidParametersByName.value.get('filters[name]') ?? []}
           />

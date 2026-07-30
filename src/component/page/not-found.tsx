@@ -6,7 +6,7 @@ const pageTitle = 'Not Found';
 const NotFound = defineComponent(
   () => {
     onMounted(() => {
-      // eslint-disable-next-line functional/immutable-data
+      // oxlint-disable-next-line functional/immutable-data
       document.title = pageTitle;
     });
 

@@ -6,10 +6,10 @@ import { test, expect, describe } from 'vitest';
 import { formatHtml } from '../../formatter';
 import { Pagination } from '../../../src/component/partial/pagination';
 
+const submitPage = (): void => {};
+
 describe('pagination', () => {
   test('max pages 1', () => {
-    const submitPage = (): void => {};
-
     const { container } = render(<Pagination currentPage={1} maxPages={1} totalPages={10} submitPage={submitPage} />);
 
     expect(formatHtml(container.outerHTML)).toMatchInlineSnapshot(`
@@ -19,8 +19,6 @@ describe('pagination', () => {
   });
 
   test('total pages 1', () => {
-    const submitPage = (): void => {};
-
     const { container } = render(<Pagination currentPage={1} maxPages={7} totalPages={1} submitPage={submitPage} />);
 
     expect(formatHtml(container.outerHTML)).toMatchInlineSnapshot(`
@@ -30,8 +28,6 @@ describe('pagination', () => {
   });
 
   test('current 1', () => {
-    const submitPage = (): void => {};
-
     const { container } = render(<Pagination currentPage={1} maxPages={7} totalPages={10} submitPage={submitPage} />);
 
     expect(formatHtml(container.outerHTML)).toMatchInlineSnapshot(`
@@ -72,8 +68,6 @@ describe('pagination', () => {
   });
 
   test('current 4', () => {
-    const submitPage = (): void => {};
-
     const { container } = render(<Pagination currentPage={4} maxPages={7} totalPages={10} submitPage={submitPage} />);
 
     expect(formatHtml(container.outerHTML)).toMatchInlineSnapshot(`
@@ -119,8 +113,6 @@ describe('pagination', () => {
   });
 
   test('current 7', () => {
-    const submitPage = (): void => {};
-
     const { container } = render(<Pagination currentPage={7} maxPages={7} totalPages={10} submitPage={submitPage} />);
 
     expect(formatHtml(container.outerHTML)).toMatchInlineSnapshot(`
@@ -166,8 +158,6 @@ describe('pagination', () => {
   });
 
   test('current 10', () => {
-    const submitPage = (): void => {};
-
     const { container } = render(<Pagination currentPage={10} maxPages={7} totalPages={10} submitPage={submitPage} />);
 
     expect(formatHtml(container.outerHTML)).toMatchInlineSnapshot(`
@@ -210,12 +200,12 @@ describe('pagination', () => {
   test('buttons', async () => {
     const pages: number[] = [];
 
-    const submitPage = (page: number): void => {
-      // eslint-disable-next-line functional/immutable-data
+    const submitPageMock = (page: number): void => {
+      // oxlint-disable-next-line functional/immutable-data
       pages.push(page);
     };
 
-    render(<Pagination currentPage={7} maxPages={7} totalPages={10} submitPage={submitPage} />);
+    render(<Pagination currentPage={7} maxPages={7} totalPages={10} submitPage={submitPageMock} />);
 
     for await (const element of screen.getAllByRole('button')) {
       await userEvent.click(element);

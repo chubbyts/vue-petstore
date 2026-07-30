@@ -73,6 +73,7 @@ describe('create', () => {
       },
     });
 
+    // oxlint-disable-next-line functional/immutable-data
     await router.push('/pet/create');
 
     await screen.findByTestId('page-pet-create');
@@ -147,6 +148,7 @@ describe('create', () => {
       },
     });
 
+    // oxlint-disable-next-line functional/immutable-data
     await router.push('/pet/create');
 
     const testButton = await screen.findByTestId('pet-form-submit');
@@ -229,6 +231,7 @@ describe('create', () => {
       },
     });
 
+    // oxlint-disable-next-line functional/immutable-data
     await router.push('/pet/create');
 
     const testButton = await screen.findByTestId('pet-form-submit');

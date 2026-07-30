@@ -5,7 +5,7 @@ const App = defineComponent(() => {
   const displayMenu = ref<boolean>(false);
 
   const toggleMenu = () => {
-    // eslint-disable-next-line functional/immutable-data
+    // oxlint-disable-next-line functional/immutable-data
     displayMenu.value = !displayMenu.value;
   };
 

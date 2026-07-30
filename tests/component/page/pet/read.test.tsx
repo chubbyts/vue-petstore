@@ -52,6 +52,7 @@ describe('read', () => {
       },
     });
 
+    // oxlint-disable-next-line functional/immutable-data
     await router.push('/pet/c9f4bea3-e706-4397-9560-01a0c0c52151');
 
     await screen.findByTestId('page-pet-read');
@@ -125,6 +126,7 @@ describe('read', () => {
       },
     });
 
+    // oxlint-disable-next-line functional/immutable-data
     await router.push('/pet/89b3777b-1c36-493c-829d-6fe235e6af2c');
 
     await screen.findByTestId('page-pet-read');
@@ -210,6 +212,7 @@ describe('read', () => {
       },
     });
 
+    // oxlint-disable-next-line functional/immutable-data
     await router.push('/pet/f1d9b1f7-1919-4d23-b471-89c7486ecb4a');
 
     await screen.findByTestId('page-pet-read');

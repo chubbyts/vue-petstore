@@ -100,6 +100,7 @@ describe('list', () => {
       },
     });
 
+    // oxlint-disable-next-line functional/immutable-data
     await router.push('/pet');
 
     await screen.findByTestId('page-pet-list');
@@ -188,6 +189,7 @@ describe('list', () => {
       },
     });
 
+    // oxlint-disable-next-line functional/immutable-data
     await router.push('/pet');
 
     await screen.findByTestId('page-pet-list');
@@ -374,6 +376,7 @@ describe('list', () => {
       },
     });
 
+    // oxlint-disable-next-line functional/immutable-data
     await router.push('/pet');
 
     await screen.findByTestId('page-pet-list');
@@ -589,6 +592,7 @@ describe('list', () => {
       },
     });
 
+    // oxlint-disable-next-line functional/immutable-data
     await router.push('/pet');
 
     await screen.findByTestId('page-pet-list');
@@ -684,6 +688,7 @@ describe('list', () => {
       },
     });
 
+    // oxlint-disable-next-line functional/immutable-data
     await router.push('/pet');
 
     await screen.findByTestId('page-pet-list');
@@ -823,6 +828,7 @@ describe('list', () => {
       },
     });
 
+    // oxlint-disable-next-line functional/immutable-data
     await router.push('/pet');
     await screen.findByTestId('page-pet-list');
 

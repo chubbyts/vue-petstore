@@ -78,7 +78,7 @@ const PetList = defineComponent(
     };
 
     onMounted(() => {
-      // eslint-disable-next-line functional/immutable-data
+      // oxlint-disable-next-line functional/immutable-data
       document.title = pageTitle;
     });
 

@@ -8,11 +8,12 @@ import { PetFiltersForm } from '../../../src/component/form/pet-filters-form';
 import { BadRequest, NetworkError } from '../../../src/client/error';
 import type { PetFilters } from '../../../src/model/pet';
 
+const submitPetFilters = (): void => {};
+
 describe('pet-filters-form', () => {
   test('default', () => {
     const httpError = undefined;
     const initialPetFilters = {};
-    const submitPetFilters = () => {};
 
     const { container } = render(
       <PetFiltersForm
@@ -50,7 +51,6 @@ describe('pet-filters-form', () => {
   test('network error', () => {
     const httpError = new NetworkError({ title: 'network error' });
     const initialPetFilters = {};
-    const submitPetFilters = () => {};
 
     render(
       <PetFiltersForm
@@ -66,7 +66,6 @@ describe('pet-filters-form', () => {
       title: 'bad request',
     });
     const initialPetFilters = {};
-    const submitPetFilters = () => {};
 
     render(
       <PetFiltersForm
@@ -83,7 +82,6 @@ describe('pet-filters-form', () => {
       invalidParameters: [{ name: 'filters[name]', reason: 'reason' }],
     });
     const initialPetFilters = {};
-    const submitPetFilters = () => {};
 
     const { container } = render(
       <PetFiltersForm
@@ -124,7 +122,7 @@ describe('pet-filters-form', () => {
   test('submit with name', async () => {
     const httpError = undefined;
     const initialPetFilters = { name: 'Brown' };
-    const submitPetFilters = vi.fn((petFilters: PetFilters) => {
+    const submitPetFiltersMock = vi.fn((petFilters: PetFilters) => {
       expect(petFilters).toEqual({ name: 'Brownie' });
     });
 
@@ -132,7 +130,7 @@ describe('pet-filters-form', () => {
       <PetFiltersForm
         httpError={httpError}
         initialPetFilters={initialPetFilters}
-        submitPetFilters={submitPetFilters}
+        submitPetFilters={submitPetFiltersMock}
       />,
     );
 
@@ -144,13 +142,13 @@ describe('pet-filters-form', () => {
 
     await userEvent.click(submitButton);
 
-    expect(submitPetFilters).toHaveBeenCalledTimes(1);
+    expect(submitPetFiltersMock).toHaveBeenCalledTimes(1);
   });
 
   test('submit without name', async () => {
     const httpError = undefined;
     const initialPetFilters = { name: '' };
-    const submitPetFilters = vi.fn((petFilters: PetFilters) => {
+    const submitPetFiltersMock = vi.fn((petFilters: PetFilters) => {
       expect(petFilters).toEqual({ name: undefined });
     });
 
@@ -158,7 +156,7 @@ describe('pet-filters-form', () => {
       <PetFiltersForm
         httpError={httpError}
         initialPetFilters={initialPetFilters}
-        submitPetFilters={submitPetFilters}
+        submitPetFilters={submitPetFiltersMock}
       />,
     );
 
@@ -166,6 +164,6 @@ describe('pet-filters-form', () => {
 
     await userEvent.type(nameField, '{enter}');
 
-    expect(submitPetFilters).toHaveBeenCalledTimes(1);
+    expect(submitPetFiltersMock).toHaveBeenCalledTimes(1);
   });
 });

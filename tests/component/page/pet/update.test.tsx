@@ -81,6 +81,7 @@ describe('update', () => {
       },
     });
 
+    // oxlint-disable-next-line functional/immutable-data
     await router.push('/pet/4d783b77-eb09-4603-b99b-f590b605eaa9/update');
 
     await screen.findByTestId('page-pet-update');
@@ -158,6 +159,7 @@ describe('update', () => {
       },
     });
 
+    // oxlint-disable-next-line functional/immutable-data
     await router.push('/pet/0a006ee6-7840-439a-8801-cee1d0f1e692/update');
 
     await screen.findByTestId('page-pet-update');
@@ -246,6 +248,7 @@ describe('update', () => {
       },
     });
 
+    // oxlint-disable-next-line functional/immutable-data
     await router.push('/pet/796348ce-c637-4096-8d8d-238368924d2f/update');
 
     const testButton = await screen.findByTestId('pet-form-submit');
@@ -340,6 +343,7 @@ describe('update', () => {
       },
     });
 
+    // oxlint-disable-next-line functional/immutable-data
     await router.push('/pet/fd115a9b-c4df-4bc0-ae2a-8b59b00502f2/update');
 
     const testButton = await screen.findByTestId('pet-form-submit');

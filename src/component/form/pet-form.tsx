@@ -28,7 +28,7 @@ export const PetForm = defineComponent(
             dataTestId="pet-form-name"
             label="Name"
             value={pet.name}
-            // eslint-disable-next-line functional/immutable-data
+            // oxlint-disable-next-line functional/immutable-data
             setValue={(value) => (pet.name = value)}
             invalidParameters={groupInvalidParametersByName.value.get('name') ?? []}
           />
@@ -36,7 +36,7 @@ export const PetForm = defineComponent(
             dataTestId="pet-form-tag"
             label="Tag"
             value={pet.tag ?? ''}
-            // eslint-disable-next-line functional/immutable-data
+            // oxlint-disable-next-line functional/immutable-data
             setValue={(value) => (pet.tag = value === '' ? undefined : value)}
             invalidParameters={groupInvalidParametersByName.value.get('tag') ?? []}
           />
@@ -51,16 +51,14 @@ export const PetForm = defineComponent(
                       label="Name"
                       value={vaccination.name}
                       setValue={(value) =>
-                        // eslint-disable-next-line functional/immutable-data
-                        (pet.vaccinations = [
-                          ...pet.vaccinations.map((currentVaccination, y) => {
-                            if (y === i) {
-                              return { ...currentVaccination, name: value };
-                            }
+                        // oxlint-disable-next-line functional/immutable-data
+                        (pet.vaccinations = pet.vaccinations.map((currentVaccination, y) => {
+                          if (y === i) {
+                            return { ...currentVaccination, name: value };
+                          }
 
-                            return currentVaccination;
-                          }),
-                        ])
+                          return currentVaccination;
+                        }))
                       }
                       invalidParameters={groupInvalidParametersByName.value.get(`vaccinations[${i}][name]`) ?? []}
                     />
@@ -70,8 +68,8 @@ export const PetForm = defineComponent(
                         e.preventDefault();
                         e.stopPropagation();
 
-                        // eslint-disable-next-line functional/immutable-data
-                        pet.vaccinations = [...pet.vaccinations.filter((_, y) => y !== i)];
+                        // oxlint-disable-next-line functional/immutable-data
+                        pet.vaccinations = pet.vaccinations.filter((_, y) => y !== i);
                       }}
                       colorTheme="red"
                     >
@@ -86,7 +84,7 @@ export const PetForm = defineComponent(
                   e.preventDefault();
                   e.stopPropagation();
 
-                  // eslint-disable-next-line functional/immutable-data
+                  // oxlint-disable-next-line functional/immutable-data
                   pet.vaccinations = [...pet.vaccinations, { name: '' }];
                 }}
                 colorTheme="green"
