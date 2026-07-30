@@ -40,6 +40,7 @@ export const Button = defineComponent(
   (props: ButtonHTMLAttributes & { colorTheme: ColorTheme }, { slots }) => {
     return () => (
       <button
+        type="submit"
         {...props}
         class={`inline-block px-5 py-2 text-white ${getColorThemeClasses(props.colorTheme)} ${props.class ?? ''}`}
       >

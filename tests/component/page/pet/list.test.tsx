@@ -2,7 +2,7 @@
 
 import { vi, test, expect, describe } from 'vitest';
 import { userEvent } from '@testing-library/user-event';
-import { render, screen } from '@testing-library/vue';
+import { render, screen, waitFor } from '@testing-library/vue';
 import { createRouter, createWebHistory, RouterView } from 'vue-router';
 import { defineComponent } from 'vue';
 import { QueryClient, VueQueryPlugin } from '@tanstack/vue-query';
@@ -230,13 +230,13 @@ describe('list', () => {
                       class="block border-x border-gray-300 bg-gray-100 px-4 font-bold first:border-t first:pt-3 last:border-b last:pb-3 md:table-cell md:border-x-0 md:border-y md:px-4 md:py-3 md:first:border-l md:last:border-r"
                     >
                       <span>Name (</span
-                      ><button data-testid="pet-sort-name-asc">
+                      ><button type="button" data-testid="pet-sort-name-asc">
                         <span class="mx-1 inline-block">A-Z</span></button
                       ><span>|</span
-                      ><button data-testid="pet-sort-name-desc">
+                      ><button type="button" data-testid="pet-sort-name-desc">
                         <span class="mx-1 inline-block">Z-A</span></button
                       ><span>|</span
-                      ><button data-testid="pet-sort-name--">
+                      ><button type="button" data-testid="pet-sort-name--">
                         <span class="mx-1 inline-block">---</span></button
                       ><span>)</span>
                     </div>
@@ -422,13 +422,13 @@ describe('list', () => {
                       class="block border-x border-gray-300 bg-gray-100 px-4 font-bold first:border-t first:pt-3 last:border-b last:pb-3 md:table-cell md:border-x-0 md:border-y md:px-4 md:py-3 md:first:border-l md:last:border-r"
                     >
                       <span>Name (</span
-                      ><button data-testid="pet-sort-name-asc">
+                      ><button type="button" data-testid="pet-sort-name-asc">
                         <span class="mx-1 inline-block">A-Z</span></button
                       ><span>|</span
-                      ><button data-testid="pet-sort-name-desc">
+                      ><button type="button" data-testid="pet-sort-name-desc">
                         <span class="mx-1 inline-block">Z-A</span></button
                       ><span>|</span
-                      ><button data-testid="pet-sort-name--">
+                      ><button type="button" data-testid="pet-sort-name--">
                         <span class="mx-1 inline-block">---</span></button
                       ><span>)</span>
                     </div>
@@ -485,6 +485,7 @@ describe('list', () => {
                         colortheme="gray"
                         >Update</a
                       ><button
+                        type="submit"
                         colortheme="red"
                         class="inline-block px-5 py-2 text-white bg-red-600 hover:bg-red-700"
                         data-testid="remove-pet-0"
@@ -643,7 +644,9 @@ describe('list', () => {
         },
       });
 
-    nock('https://petstore.test').delete('/api/pets/4d783b77-eb09-4603-b99b-f590b605eaa9').reply(204);
+    const petDeleteScope = nock('https://petstore.test')
+      .delete('/api/pets/4d783b77-eb09-4603-b99b-f590b605eaa9')
+      .reply(204);
 
     const router = createRouter({
       history: createWebHistory(),
@@ -696,6 +699,10 @@ describe('list', () => {
     const removeButton = await screen.findByTestId('remove-pet-0');
 
     await userEvent.click(removeButton);
+
+    await waitFor(() => {
+      expect(petDeleteScope.isDone()).toBe(true);
+    });
   });
 
   test('submit', async () => {
@@ -917,5 +924,9 @@ describe('list', () => {
     const paginationNextButton = await screen.findByTestId('pagination-next');
 
     await userEvent.click(paginationNextButton);
+
+    await waitFor(() => {
+      expect(router.currentRoute.value.fullPath).toBe('/pet?page=2&filters%5Bname%5D=Brownie&sort%5Bname%5D=desc');
+    });
   });
 });

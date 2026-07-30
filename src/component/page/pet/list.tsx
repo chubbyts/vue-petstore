@@ -112,6 +112,7 @@ const PetList = defineComponent(
                         <Th>
                           <span>Name (</span>
                           <button
+                            type="button"
                             data-testid="pet-sort-name-asc"
                             onClick={() => submitPetSort({ ...query.value.sort, name: 'asc' })}
                           >
@@ -119,6 +120,7 @@ const PetList = defineComponent(
                           </button>
                           <span>|</span>
                           <button
+                            type="button"
                             data-testid="pet-sort-name-desc"
                             onClick={() => submitPetSort({ ...query.value.sort, name: 'desc' })}
                           >
@@ -126,6 +128,7 @@ const PetList = defineComponent(
                           </button>
                           <span>|</span>
                           <button
+                            type="button"
                             data-testid="pet-sort-name--"
                             onClick={() => submitPetSort({ ...query.value.sort, name: undefined })}
                           >

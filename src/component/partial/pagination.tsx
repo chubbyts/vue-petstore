@@ -45,6 +45,7 @@ export const Pagination = defineComponent(
             {props.currentPage > 2 ? (
               <li class="inline-block">
                 <button
+                  type="button"
                   class="border-r border-gray-300 px-3 py-2"
                   onClick={() => {
                     props.submitPage(1);
@@ -57,6 +58,7 @@ export const Pagination = defineComponent(
             {props.currentPage > 1 ? (
               <li class="inline-block">
                 <button
+                  type="button"
                   class="border-r border-gray-300 px-3 py-2"
                   onClick={() => {
                     props.submitPage(props.currentPage - 1);
@@ -69,6 +71,7 @@ export const Pagination = defineComponent(
             {pages.value.map((page: number) => (
               <li key={page} class="inline-block">
                 <button
+                  type="button"
                   class={`border-r border-gray-300 px-3 py-2 ${page === props.currentPage ? 'bg-gray-100' : ''}`}
                   onClick={() => {
                     props.submitPage(page);
@@ -81,6 +84,7 @@ export const Pagination = defineComponent(
             {props.currentPage < props.totalPages ? (
               <li class="inline-block">
                 <button
+                  type="button"
                   class="border-r border-gray-300 px-3 py-2"
                   onClick={() => {
                     props.submitPage(props.currentPage + 1);
@@ -93,6 +97,7 @@ export const Pagination = defineComponent(
             {props.currentPage < props.totalPages - 1 ? (
               <li class="inline-block">
                 <button
+                  type="button"
                   class="border-r border-gray-300 px-3 py-2"
                   onClick={() => {
                     props.submitPage(props.totalPages);
