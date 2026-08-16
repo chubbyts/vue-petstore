@@ -1,8 +1,14 @@
 import { defineComponent, ref } from 'vue';
 import { RouterLink, RouterView } from 'vue-router';
+import { useOidc } from './hook/use-oidc';
+import { HttpError as HttpErrorPartial } from './component/partial/http-error';
+import { HttpError } from './client/error';
+import { H1 } from './component/heading';
+import { Button } from './component/button';
 
 const App = defineComponent(() => {
   const displayMenu = ref<boolean>(false);
+  const oidc = useOidc();
 
   const toggleMenu = () => {
     // oxlint-disable-next-line functional/immutable-data
@@ -14,7 +20,7 @@ const App = defineComponent(() => {
       <nav class="absolute flow-root h-16 w-full bg-gray-900 px-4 py-3 text-2xl leading-relaxed font-semibold text-gray-100 uppercase">
         <button
           type="button"
-          class="float-right block border-2 p-2 md:hidden"
+          class="float-right ml-4 block border-2 p-2 md:hidden"
           data-testid="navigation-toggle"
           onClick={toggleMenu}
         >
@@ -22,6 +28,16 @@ const App = defineComponent(() => {
           <span class="block h-2 w-6 border-t-2" />
           <span class="block h-0 w-6 border-t-2" />
         </button>
+        {oidc.isAuthenticated ? (
+          <button
+            type="button"
+            data-testid="navigation-logout"
+            class="float-right ml-4 border-2 px-3 py-1 text-base leading-relaxed hover:bg-gray-700"
+            onClick={oidc.logout}
+          >
+            Logout
+          </button>
+        ) : null}
         <RouterLink to="/" class="hover:text-gray-500">
           Petstore
         </RouterLink>
@@ -48,7 +64,22 @@ const App = defineComponent(() => {
         </ul>
       </nav>
       <div class={`w-full px-6 py-8 md:w-2/3 lg:w-3/4 xl:w-4/5 ${displayMenu.value ? 'mt-0' : 'mt-16'}`}>
-        <RouterView />
+        {oidc.error ? (
+          <HttpErrorPartial httpError={new HttpError({ title: 'Authentication failed', detail: oidc.error.message })} />
+        ) : null}
+        {!oidc.isLoading ? (
+          oidc.isAuthenticated ? (
+            <RouterView />
+          ) : (
+            <div data-testid="login-required">
+              <H1>Login</H1>
+              <p class="mb-4">You need to login to use the petstore.</p>
+              <Button data-testid="login" colorTheme="blue" onClick={oidc.login}>
+                Login
+              </Button>
+            </div>
+          )
+        ) : null}
       </div>
     </div>
   );
