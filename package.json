@@ -22,38 +22,38 @@
     "test": "vitest"
   },
   "dependencies": {
-    "@chubbyts/chubbyts-throwable-to-error": "^2.3.0",
-    "@tanstack/vue-query": "^5.101.4",
+    "@chubbyts/chubbyts-throwable-to-error": "^2.3.3",
+    "@tanstack/vue-query": "^5.104.2",
     "cross-fetch": "^4.1.0",
     "date-fns": "^4.4.0",
     "oidc-client-ts": "^3.5.0",
-    "qs": "^6.15.3",
-    "vue": "^3.5.40",
-    "vue-router": "^5.2.0",
-    "zod": "^4.4.3"
+    "qs": "^6.16.0",
+    "vue": "^3.5.44",
+    "vue-router": "^5.4.0",
+    "zod": "^4.6.7"
   },
   "devDependencies": {
     "@chubbyts/chubbyts-function-mock": "^2.3.0",
-    "@chubbyts/chubbyts-oxlint": "^1.0.0",
+    "@chubbyts/chubbyts-oxlint": "^1.0.1",
     "@prettier/sync": "^0.6.1",
     "@tailwindcss/postcss": "^4.3.3",
-    "@testing-library/user-event": "^14.6.1",
+    "@testing-library/user-event": "^14.6.8",
     "@testing-library/vue": "^8.1.0",
-    "@types/node": "^26.1.2",
+    "@types/node": "^26.6.5",
     "@types/qs": "^6.15.1",
     "@vitejs/plugin-vue-jsx": "^5.1.6",
-    "@vitest/coverage-v8": "^4.1.10",
-    "jsdom": "^30.0.1",
-    "nock": "^14.0.16",
-    "oxlint": "^1.76.0",
-    "postcss": "^8.5.25",
-    "prettier": "^3.9.6",
+    "@vitest/coverage-v8": "^5.0.4",
+    "jsdom": "^30.1.2",
+    "nock": "^15.0.1",
+    "oxlint": "^1.88.0",
+    "postcss": "^8.5.30",
+    "prettier": "^3.9.10",
     "prettier-plugin-tailwindcss": "^0.8.1",
     "tailwindcss": "^4.3.3",
     "typescript": "^6.0.3",
-    "vite": "^8.1.5",
-    "vitest": "^4.1.10",
-    "vue-tsc": "^3.3.8"
+    "vite": "^8.3.4",
+    "vitest": "^5.0.4",
+    "vue-tsc": "^3.3.13"
   },
   "engines": {
     "node": ">=22"
@@ -67,5 +67,5 @@
       "prettier-plugin-tailwindcss"
     ]
   },
-  "packageManager": "pnpm@11.0.9+sha512.34ce82e6780233cf9cad8685029a8f81d2e06196c5a9bad98879f7424940c6817c4e4524fb7d38b8553ceed48b9758b8ebaf1abd3600c232c4c8cf7366086f38"
+  "packageManager": "pnpm@12.11.2"
 }
