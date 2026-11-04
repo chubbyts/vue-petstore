@@ -56,25 +56,25 @@ const PetList = defineComponent(
     const petDeleteMutation = useMutation<unknown, HttpError, string>({
       mutationFn: provideDeleteMutationFn(deletePetClient),
       onSuccess: () => {
-        queryClient.invalidateQueries({ queryKey: queryKey.value });
+        void queryClient.invalidateQueries({ queryKey: queryKey.value });
       },
       retry: false,
     });
 
-    const deletePet = async (id: string) => {
+    const deletePet = (id: string): void => {
       petDeleteMutation.mutate(id);
     };
 
     const submitPage = (page: number): void => {
-      push(`/pet?${qs.stringify({ ...query.value, page })}`);
+      void push(`/pet?${qs.stringify({ ...query.value, page })}`);
     };
 
     const submitPetFilters = (filters: PetFilters): void => {
-      push(`/pet?${qs.stringify({ ...query.value, page: 1, filters })}`);
+      void push(`/pet?${qs.stringify({ ...query.value, page: 1, filters })}`);
     };
 
     const submitPetSort = (sort: PetSort): void => {
-      push(`/pet?${qs.stringify({ ...query.value, page: 1, sort })}`);
+      void push(`/pet?${qs.stringify({ ...query.value, page: 1, sort })}`);
     };
 
     onMounted(() => {

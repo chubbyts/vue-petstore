@@ -19,12 +19,12 @@ const PetCreate = defineComponent(
     const petMutation = useMutation<PetResponse, HttpError, PetRequest>({
       mutationFn: provideCreateMutationFn(createPetClient),
       onSuccess: () => {
-        push('/pet');
+        void push('/pet');
       },
       retry: false,
     });
 
-    const submitPet = async (petRequest: PetRequest) => {
+    const submitPet = (petRequest: PetRequest): void => {
       petMutation.mutate(petRequest);
     };
 
