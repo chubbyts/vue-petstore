@@ -1,63 +1,74 @@
-import type { FieldsetHTMLAttributes, SlotsType, VNode } from 'vue';
+import type { VNode } from 'vue';
 import { defineComponent } from 'vue';
 import type { InvalidParameter } from '../../client/error';
+import { cx } from '../class-names';
 
-export const FieldSet = defineComponent(
-  (props: FieldsetHTMLAttributes, { slots }) => {
-    return () => (
-      <fieldset {...props} class={`mb-3 border border-gray-300 px-4 py-3 ${props.class ?? ''}`}>
-        {slots.default()}
-      </fieldset>
-    );
+export const inputClasses = (hasError: boolean): string =>
+  cx(
+    'min-w-0 rounded-lg border px-3 text-fg placeholder:text-fg-placeholder focus:border-focus',
+    hasError ? 'border-danger-field-line bg-danger-field' : 'border-line-control bg-canvas',
+  );
+
+export const labelClasses = 'text-sm font-semibold';
+
+export const FieldErrors = defineComponent(
+  (props: { id: string; invalidParameters: Array<InvalidParameter> }) => {
+    return () =>
+      props.invalidParameters.length > 0 ? (
+        <ul id={props.id} class="text-danger m-0 list-none p-0 text-[13px]">
+          {props.invalidParameters.map((invalidParameter) => (
+            <li key={`${invalidParameter.name}-${invalidParameter.reason}`}>{invalidParameter.reason}</li>
+          ))}
+        </ul>
+      ) : null;
   },
   {
-    name: 'FieldSet',
-    props: ['class'],
-    slots: Object as SlotsType<{ default: () => VNode[] }>,
+    name: 'FieldErrors',
+    props: ['id', 'invalidParameters'],
   },
 );
 
-export const TextField = defineComponent(
-  (props: {
-    dataTestId: string;
-    label: string;
-    value: string;
-    setValue: (value: string) => void;
-    invalidParameters: Array<InvalidParameter>;
-  }) => {
-    return () => (
-      <label class={`block ${props.invalidParameters.length > 0 ? 'text-red-600' : ''} `}>
-        {props.label}
-        <input
-          data-testid={props.dataTestId}
-          type="text"
-          class={`mt-2 mb-3 block w-full border px-3 py-2 ${
-            props.invalidParameters.length > 0 ? 'border-red-600 bg-red-100' : 'border-gray-300'
-          }`}
-          // @ts-expect-error target should always exist and should have a value
-          onBlur={(e) => props.setValue(e.currentTarget.value)}
-          onKeydown={(e) => {
-            if (e.code !== 'Enter') {
-              return;
-            }
+export type TextFieldProps = {
+  dataTestId?: string;
+  id: string;
+  label: string | VNode | Array<VNode | string>;
+  value: string;
+  setValue: (value: string) => void;
+  invalidParameters: Array<InvalidParameter>;
+  placeholder?: string;
+  required?: boolean;
+};
 
-            // @ts-expect-error target should always exist and should have a value
-            props.setValue(e.currentTarget.value);
-          }}
-          value={props.value}
-        />
-        {props.invalidParameters.length > 0 ? (
-          <ul class="mb-3">
-            {props.invalidParameters.map((invalidParameter, i) => (
-              <li key={i}>{invalidParameter.reason}</li>
-            ))}
-          </ul>
-        ) : null}
-      </label>
-    );
+export const TextField = defineComponent(
+  (props: TextFieldProps) => {
+    return () => {
+      const hasError = props.invalidParameters.length > 0;
+      const errorId = `${props.id}-errors`;
+
+      return (
+        <div class="flex flex-col gap-1.5">
+          <label for={props.id} class={labelClasses}>
+            {props.label}
+          </label>
+          <input
+            data-testid={props.dataTestId}
+            id={props.id}
+            type="text"
+            class={cx('h-11', inputClasses(hasError))}
+            aria-required={props.required || undefined}
+            aria-invalid={hasError || undefined}
+            aria-describedby={hasError ? errorId : undefined}
+            placeholder={props.placeholder}
+            value={props.value}
+            onInput={(e: Event) => props.setValue((e.target as HTMLInputElement).value)}
+          />
+          <FieldErrors id={errorId} invalidParameters={props.invalidParameters} />
+        </div>
+      );
+    };
   },
   {
     name: 'TextField',
-    props: ['dataTestId', 'label', 'value', 'setValue', 'invalidParameters'],
+    props: ['dataTestId', 'id', 'label', 'value', 'setValue', 'invalidParameters', 'placeholder', 'required'],
   },
 );
