@@ -1,18 +1,18 @@
-import { defineComponent, onMounted } from 'vue';
-import { H1 } from '../heading';
+import { defineComponent } from 'vue';
+import { PageHeader } from '../heading';
+import { BackToList } from '../partial/back-to-list';
+import { useDocumentTitle } from '../../hook/use-document-title';
 
 const pageTitle = 'Not Found';
 
 const NotFound = defineComponent(
   () => {
-    onMounted(() => {
-      // oxlint-disable-next-line functional/immutable-data
-      document.title = pageTitle;
-    });
+    useDocumentTitle(pageTitle);
 
     return () => (
-      <div>
-        <H1>{pageTitle}</H1>
+      <div data-testid="page-not-found" class="flex flex-col gap-[22px]">
+        <PageHeader eyebrow="404" title={pageTitle} v-slots={{ action: () => <BackToList to="/pet" /> }} />
+        <p class="text-fg-muted m-0">There is no page at this address.</p>
       </div>
     );
   },
